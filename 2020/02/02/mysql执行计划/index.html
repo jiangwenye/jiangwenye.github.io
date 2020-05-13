@@ -7,22 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Dubbo服务暴露源码分析 - CanJ--Grow</title>
+  <title>Mysql执行计划详解 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Dubbo服务暴露源码分析duubo提供者初始化源码分析—">
+  <meta name="description" content="Mysql执行计划详解转载自—https:&#x2F;&#x2F;www.cnblogs.com&#x2F;yinjw&#x2F;p&#x2F;11864477.html">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dubbo服务暴露源码分析">
-<meta property="og:url" content="http://jiangwenye.github.io/2019/11/13/dubbo-export/index.html">
+<meta property="og:title" content="Mysql执行计划详解">
+<meta property="og:url" content="http://jiangwenye.github.io/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Dubbo服务暴露源码分析duubo提供者初始化源码分析—">
+<meta property="og:description" content="Mysql执行计划详解转载自—https:&#x2F;&#x2F;www.cnblogs.com&#x2F;yinjw&#x2F;p&#x2F;11864477.html">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
-<meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T05:13:49.033Z">
+<meta property="article:published_time" content="2020-02-02T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-13T09:50:23.258Z">
 <meta property="article:author" content="CanJ">
-<meta property="article:tag" content="dubbo">
-<meta property="article:tag" content="spring">
-<meta property="article:tag" content="源码">
+<meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -164,20 +162,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-dubbo-export" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-mysql执行计划" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Dubbo服务暴露源码分析
+      Mysql执行计划详解
     </h1>
   
 
         
-        <a href="/2019/11/13/dubbo-export/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
+        <a href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" class="archive-article-date">
+  	<time datetime="2020-02-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-02</time>
 </a>
         
       </header>
@@ -192,15 +190,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
         		</li>
       		
 		</ul>
@@ -212,7 +202,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
+        			<a href="/categories/mysql/" class="article-tag-list-link color1">mysql</a>
         		</li>
       		
 		</ul>
@@ -226,29 +216,172 @@
       
 
       	
-      		<h1 id="Dubbo服务暴露源码分析"><a href="#Dubbo服务暴露源码分析" class="headerlink" title="Dubbo服务暴露源码分析"></a><strong>Dubbo服务暴露源码分析</strong></h1><h4 id="duubo提供者初始化源码分析—"><a href="#duubo提供者初始化源码分析—" class="headerlink" title="duubo提供者初始化源码分析—"></a><em>duubo提供者初始化源码分析—</em></h4><a id="more"></a>
-<p><em>spring启动的时候用dubbo解析器解析<font color='green'>‘dubbo: service’</font>标签成<font color='blue'>serviceBean</font>类</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513122952908033041001500966.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513122952908033041001500966.png" alt=""></a><br><em>该类继承spring的<font color='olive green'>监听类</font>和<font color='olive green'>初始化类</font>，在<font color='red'>afterProperties()</font>方法中将该service对应的dubbo配置初始化设置，监听spring的容器bean<font color='olive green'>初始化完成事件</font>，<font color='red'>onApplication()</font>会在springboot<font color='olive green'>刷新完容器bean</font>调用。</em></p>
-<p><strong>主要看这个</strong><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123042036033041001501299.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123042036033041001501299.png" alt=""></a><br><em>进入该方法直接跳到</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123108268033041001501834.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123108268033041001501834.png" alt=""></a></p>
-<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123136049033041001601504.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123136049033041001601504.png" alt=""></a></p>
-<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123218919033041001601579.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123218919033041001601579.png" alt=""></a><br><em>dubbo也会有多协议配置<br>这里是如果存在多个<font color='blue'>protocol</font>则在多个端口暴露。</em></p>
-<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123417152033041001900156.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123417152033041001900156.png" alt=""></a></p>
-<p><em>进入这个方法，先根据该service的dubbo配置初始化一些参数配置（供后面构建<strong>url</strong>和<strong>Invoker</strong>,<strong>exporter</strong>使用）</em></p>
-<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123454115033041001900433.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123454115033041001900433.png" alt=""></a><br><em>构建dubbo所需的url.</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123628126033041001900956.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123628126033041001900956.png" alt=""></a></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123645796033041001901054.png" alt=""><br><em>这个方法就是获取执行获取ref对象的代理<font color='blue'>Invoker</font>类，其中的参数<font color='pink'>proxy</font>就是dubbo service的具体实现bean，调用这个返回的<font color='blue'>invoker</font>的<font color='red'>doInvoker()</font>方法会执行<font color='blue'>proxy</font>的具体方法。</em><br><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123846778033041001901469.png" alt=""><br><em>最重要的就是这个<font color='red'>export()</font>方法</em></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123932821033041002101983.png" alt=""><br><em>在调用这个<font color='red'>export()</font>方法之前，其实已经调用过</em></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124009654033041002300478.png" alt=""></p>
-<p><em>他会传入的<font color='blue'>Invoker</font>代理对象构建Filter过滤器链表,如下</em><br><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124052062033041002300578.png" alt=""></p>
-<p><em>回归<font color='blue'>Registry</font>的<font color='red'>export()</font>方法</em></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124211085033041002400385.png" alt=""><br><em>最终会调用</em></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124239194033041002501097.png" alt=""></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124300575033041002501468.png" alt=""></p>
-<p><strong>*DubboProtocol</strong>的<font color='red'>openServer</font>就是创建该服务提供者的对应端口的<strong>netty serverSocket.*</strong></p>
-<p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124440321033041002600339.png" alt=""></p>
-<p><em>第一个方法是根据请求信息获取对应的<strong>invoker</strong>对象（这个类就是处理请求的handler）</em></p>
-<p><em>这里可以看到第二个方法就是判断能否在<strong>invoker</strong>里找到请求的方法，有的话就执行。</em><br><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513125401565033041002901759.png" alt=""><br><em>这个方法就是根据请求的版本组名端口等信息来获取对应的*</em>invoker*<em>来执行具体的方法</em>。</p>
-<pre><code>// 计算 service key，格式为 groupName/serviceName:serviceVersion:port。比如：
-//   dubbo/com.alibaba.dubbo.demo.DemoService:1.0.0:20880</code></pre><p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513125633996033041003000872.png" alt=""></p>
-<p><em>第一个方法在这里会将该service提供者信息注册到<strong>zk</strong>。<br>第二个方法是<strong>watch zk</strong>相应节点。<br>核心调用<font color='red'>registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener)</font>:</em><br><font size=2 color='navy blue'>对发布的dubbo服务的这个url进行监听， 当服务变化有时通知重新暴露服务， 以zookeeper为例，暴露服务会在zookeeper生成一个节点，当节点发生变化的时候会触发overrideSubscribeListener的notify方法重新暴露服务</font></p>
+      		<h1 id="Mysql执行计划详解"><a href="#Mysql执行计划详解" class="headerlink" title="Mysql执行计划详解"></a><strong>Mysql执行计划详解</strong></h1><p><em>转载自—<a href="https://www.cnblogs.com/yinjw/p/11864477.html" target="_blank" rel="noopener">https://www.cnblogs.com/yinjw/p/11864477.html</a></em></p>
+<a id="more"></a>
+<p>我们经常使用 MySQL 的执行计划来查看 SQL 语句的执行效率，接下来分析执行计划的各个显示内容。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">users</span> </span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">id</span> <span class="keyword">IN</span> (<span class="keyword">SELECT</span> userID FROMuser_address <span class="keyword">WHERE</span> address = <span class="string">"湖南长沙麓谷"</span>) ;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093432238-153361063.png" alt=""></p>
+<h5 id="执行计划的-id"><a href="#执行计划的-id" class="headerlink" title="执行计划的 id"></a>执行计划的 id</h5><p>select 查询的序列号，标识执行的顺序</p>
+<ul>
+<li>id 相同，执行顺序由上至下</li>
+<li>id 不同，如果是子查询，id 的序号会递增，id 值越大优先级越高，越先被执行</li>
+</ul>
+<h5 id="执行计划的-select-type"><a href="#执行计划的-select-type" class="headerlink" title="执行计划的 select_type"></a>执行计划的 select_type</h5><p>查询的类型，主要是用于区分普通查询、联合查询、子查询等。</p>
+<ul>
+<li><strong>SIMPLE</strong>：简单的 select 查询，查询中不包含子查询或者 union</li>
+<li><strong>PRIMARY</strong>：查询中包含子部分，最外层查询则被标记为 primary</li>
+<li><strong>SUBQUERY/MATERIALIZED</strong>：SUBQUERY 表示在 select 或 where 列表中包含了子查询，MATERIALIZED：表示 where 后面 in 条件的子查询</li>
+<li><strong>UNION</strong>：表示 union 中的第二个或后面的 select 语句</li>
+<li><strong>UNION RESULT</strong>：union 的结果</li>
+</ul>
+<p>对于 UNION 和 UNION RESULT 可以通过下面的例子展现：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">users</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> <span class="keyword">IN</span>(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">users</span> <span class="keyword">WHERE</span> <span class="keyword">id</span> <span class="keyword">IN</span>(<span class="number">3</span>, <span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093528211-1131138338.png" alt=""></p>
+<h5 id="执行计划的-table"><a href="#执行计划的-table" class="headerlink" title="执行计划的 table"></a>执行计划的 table</h5><p>查询涉及到的表。</p>
+<ul>
+<li>直接显示表名或者表的别名</li>
+<li>&lt;unionM,N&gt; 由 ID 为 M，N 查询 union 产生的结果</li>
+<li>&lt;subqueryN&gt; 由 ID 为 N 查询产生的结果</li>
+</ul>
+<h5 id="执行计划的-type"><a href="#执行计划的-type" class="headerlink" title="执行计划的 type"></a>执行计划的 type</h5><p>访问类型，SQL 查询优化中一个很重要的指标，结果值从好到坏依次是：system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; ALL。</p>
+<ul>
+<li><strong>system</strong>：系统表，少量数据，往往不需要进行磁盘IO</li>
+<li><strong>const</strong>：常量连接</li>
+<li><strong>eq_ref</strong>：主键索引（primary key）或者非空唯一索引（unique not null）等值扫描</li>
+<li><strong>ref</strong>：非主键非唯一索引等值扫描</li>
+<li><strong>range</strong>：范围扫描</li>
+<li><strong>index</strong>：索引树扫描</li>
+<li><strong>ALL</strong>：全表扫描（full table scan）</li>
+</ul>
+<p>下面通过举例说明。</p>
+<p><strong>system</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> mysql.time_zone;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093645654-1571285635.png" alt=""></p>
+<p>上例中，从系统库 MySQL 的系统表 time_zone 里查询数据，访问类型为 system，这些数据已经加载到内存里，不需要进行磁盘 IO，这类扫描是速度最快的。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> (<span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span>) tmp;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093710208-286169122.png" alt=""><br>再举一个例子，内层嵌套（const）返回了一个临时表，外层嵌套从临时表查询，其扫描类型也是 system，也不需要走磁盘 IO，速度超快。</p>
+<p><strong>const</strong><br>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`NAME`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'shenjian'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'zhangsan'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'lisi'</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093758370-549574563.png" alt=""></p>
+<p>const 扫描的条件为： </p>
+<ol>
+<li>命中主键（primary key）或者唯一（unique）索引</li>
+<li>被连接的部分是一个常量（const）值 </li>
+</ol>
+<p>如上例，id 是 主键索引，连接部分是常量1。</p>
+<p><strong>eq_ref</strong><br>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`NAME`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'shenjian'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'zhangsan'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'lisi'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user_ex`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`age`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">18</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">2</span>,<span class="number">20</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">3</span>,<span class="number">30</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">4</span>,<span class="number">40</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">5</span>,<span class="number">50</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">USER</span>,user_ex <span class="keyword">WHERE</span> user.id=user_ex.id;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093853632-1390604828.png" alt=""></p>
+<p>eq_ref 扫描的条件为，对于前表的每一行（row），后表只有一行被扫描。 </p>
+<p>再细化一点：  </p>
+<ol>
+<li>join 查询</li>
+<li>命中主键（primary key）或者非空唯一（unique not null）索引</li>
+<li>等值连接；</li>
+</ol>
+<p>如上例，id 是主键，该 join 查询为 eq_ref 扫描。</p>
+<p><strong>ref</strong><br>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'shenjian'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'zhangsan'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'lisi'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user_ex`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`age`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">18</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">2</span>,<span class="number">20</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">3</span>,<span class="number">30</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">4</span>,<span class="number">40</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_ex <span class="keyword">values</span>(<span class="number">5</span>,<span class="number">50</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">USER</span>,user_ex <span class="keyword">WHERE</span> user.id=user_ex.id;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115093939843-1894830539.png" alt=""></p>
+<p>如果把上例 eq_ref 案例中的主键索引，改为普通非唯一（non unique）索引。就由 eq_ref 降级为了 ref，此时对于前表的每一行（row），后表可能有多于一行的数据被扫描。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094007075-936498847.png" alt=""></p>
+<p>当 id 改为普通非唯一索引后，常量的连接查询，也由 const 降级为了 ref，因为也可能有多于一行的数据被扫描。</p>
+<p>ref 扫描，可能出现在 join 里，也可能出现在单表普通索引里，每一次匹配可能有多行数据返回，虽然它比 eq_ref 要慢，但它仍然是一个很快的 join 类型。</p>
+<p><strong>range</strong><br>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'shenjian'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'zhangsan'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'lisi'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">4</span>,<span class="string">'wangwu'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">5</span>,<span class="string">'zhaoliu'</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">4</span>;</span><br><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">in</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> &gt; <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094043464-1913523967.png" alt=""><br>range 扫描就比较好理解了，它是索引上的范围查询，它会在索引上扫码特定范围内的值。</p>
+<p>像上例中的 between，in，&gt; 都是典型的范围（range）查询。</p>
+<p><strong>index</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">count</span> (*) <span class="keyword">from</span> <span class="keyword">user</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094111122-178261807.png" alt=""><br>如果 id 上不建索引，对于前表的每一行（row），后表都要被全表扫描。</p>
+<p>文章中，这个相同的 join 语句出现了三次：</p>
+<ol>
+<li>扫描类型为 eq_ref，此时 id 为主键</li>
+<li>扫描类型为 ref，此时 id 为非唯一普通索引</li>
+<li>扫描类型为 ALL，全表扫描，此时id上无索引</li>
+</ol>
+<p>有此可见，建立正确的索引，对数据库性能的提升是多么重要。</p>
+<p><strong>总结</strong></p>
+<ol>
+<li>explain 结果中的 type 字段，表示（广义）连接类型，它描述了找到所需数据使用的扫描方式；</li>
+<li>常见的扫描类型有：system&gt;const&gt;eq_ref&gt;ref&gt;range&gt;index&gt;ALL，其扫描速度由快到慢；</li>
+<li>各类扫描类型的要点是：</li>
+</ol>
+<ul>
+<li>system 最快：不进行磁盘 IO</li>
+<li>const：PK 或者 unique 上的等值查询</li>
+<li>eq_ref：PK 或者 unique 上的 join 查询，等值匹配，对于前表的每一行，后表只有一行命中</li>
+<li>ref：非唯一索引，等值匹配，可能有多行命中</li>
+<li>range：索引上的范围扫描，例如：between、in、&gt;</li>
+<li>index：索引上的全集扫描，例如：InnoDB 的 count</li>
+<li>ALL 最慢：全表扫描</li>
+<li>建立正确的索引，非常重要；</li>
+<li>使用 explain 了解并优化执行计划，非常重要；</li>
+<li>执行计划 possible_keys</li>
+<li>查询过程中有可能用到的索引。</li>
+</ul>
+<p>4.执行计划 key<br>5.实际使用的索引，如果为 NULL ，则没有使用索引。</p>
+<p><strong>执行计划 rows</strong><br>根据表统计信息或者索引选用情况，大致估算出找到所需的记录所需要读取的行数。</p>
+<p><strong>执行计划 filtered</strong><br>表示返回结果的行数占需读取行数的百分比， filtered 的值越大越好。</p>
+<p><strong>执行计划 Extra</strong><br>十分重要的额外信息。</p>
+<ul>
+<li><strong>Using filesort</strong>：MySQL 对数据使用一个外部的文件内容进行了排序，而不是按照表内的索引进行排序读取。</li>
+<li><strong>Using temporary</strong>：使用临时表保存中间结果，也就是说 MySQL 在对查询结果排序时使用了临时表，常见于order by 或 group by。</li>
+<li><strong>Using index</strong>：表示 SQL 操作中使用了覆盖索引（Covering Index），避免了访问表的数据行，效率高。</li>
+<li><strong>Using index condition</strong>：表示 SQL 操作命中了索引，但不是所有的列数据都在索引树上，还需要访问实际的行记录。</li>
+<li><strong>Using where</strong>：表示 SQL 操作使用了 where 过滤条件。</li>
+<li><strong>Select tables optimized away</strong>：基于索引优化 MIN/MAX 操作或者 MyISAM 存储引擎优化 COUNT(*) 操作，不必等到执行阶段再进行计算，查询执行计划生成的阶段即可完成优化。</li>
+<li><strong>Using join buffer (Block Nested Loop)</strong>：表示 SQL 操作使用了关联查询或者子查询，且需要进行嵌套循环计算。</li>
+</ul>
+<p>下面通过举例说明。</p>
+<p>数据准备：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`sex`</span> <span class="built_in">varchar</span>(<span class="number">5</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`name`</span> (<span class="string">`name`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8mb4;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">1</span>, <span class="string">'shenjian'</span>,<span class="string">'no'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">2</span>, <span class="string">'zhangsan'</span>,<span class="string">'no'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">3</span>, <span class="string">'lisi'</span>, <span class="string">'yes'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">user</span> <span class="keyword">values</span>(<span class="number">4</span>, <span class="string">'lisi'</span>, <span class="string">'no'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>数据说明：</p>
+<p>用户表：id 主键索引，name 普通索引（非唯一），sex 无索引。</p>
+<p>四行记录：其中 name 普通索引存在重复记录 lisi。</p>
+<p><strong>Using filesort</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">order</span> <span class="keyword">by</span> sex;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094309639-123993240.png" alt=""><br>Extra 为 Using filesort 说明，得到所需结果集，需要对所有记录进行文件排序。</p>
+<p>这类 SQL 语句性能极差，需要进行优化。</p>
+<p>典型的，在一个没有建立索引的列上进行了 order by，就会触发 filesort，常见的优化方案是，在 order by 的列上添加索引，避免每次查询都全量排序。</p>
+<p><strong>Using temporary</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> sex;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094354910-1273218547.png" alt=""><br>Extra 为 Using temporary 说明，需要建立临时表（temporary table）来暂存中间结果。</p>
+<p>这类 SQL 语句性能较低，往往也需要进行优化。</p>
+<p>典型的 group by 和 order by 同时存在，且作用于不同的字段时，就会建立临时表，以便计算出最终的结果集。</p>
+<p>临时表存在两种引擎，一种是 Memory 引擎，一种是 MyISAM 引擎，如果返回的数据在 16M 以内（默认），且没有大字段的情况下，使用 Memory 引擎，否则使用 MyISAM 引擎。 </p>
+<p><strong>Using index</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> <span class="keyword">id</span> <span class="keyword">FROM</span> <span class="keyword">USER</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094455777-1263371249.png" alt=""><br>Extra 为 Using index 说明，SQL 所需要返回的所有列数据均在一棵索引树上，而无需访问实际的行记录。</p>
+<p>这类 SQL 语句往往性能较好。</p>
+<p><strong>Using index condition</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> <span class="keyword">id</span>, <span class="keyword">name</span>, sex <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">name</span>=<span class="string">'shenjian'</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094541824-1351598179.png" alt=""><br>Extra 为 Using index condition 说明，确实命中了索引，但不是所有的列数据都在索引树上，还需要访问实际的行记录。</p>
+<p>这类 SQL 语句性能也较高，但不如 Using index。</p>
+<p><strong>Using where</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> sex=<span class="string">'no'</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094619494-57624974.png" alt=""><br>Extra 为 Using where 说明，查询的结果集使用了 where 过滤条件，比如上面的 SQL 使用了 sex = ‘no’ 的过滤条件</p>
+<p><strong>Select tables optimized away</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">SELECT</span> <span class="keyword">MAX</span>(<span class="keyword">id</span>) <span class="keyword">FROM</span> <span class="keyword">USER</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094712857-1436118671.png" alt=""></p>
+<p>比如上面的语句查询 id 的最大值，因为 id 是主键索引，根据 B+Tree 的结构，天然就是有序存放的，所以不需要等到执行阶段再进行计算，查询执行计划生成的阶段即可完成优化。</p>
+<p><strong>Using join buffer (Block Nested Loop)</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> sex=<span class="string">'no'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://img2018.cnblogs.com/i-beta/643613/201911/643613-20191115094753724-1828097411.png" alt=""></p>
+<p>Extra 为 Using join buffer (Block Nested Loop) 说明，需要进行嵌套循环计算。内层和外层的 type 均为 ALL，rows 均为4，需要循环进行4*4次计算。</p>
+<p>这类 SQL 语句性能往往也较低，需要进行优化。</p>
+<p>典型的两个关联表 join，关联字段均未建立索引，就会出现这种情况。常见的优化方案是，在关联字段上添加索引，避免每次嵌套循环计算。</p>
 
       	
       
@@ -276,7 +409,7 @@
   <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2019/11/13/dubbo-export/" alt="微信分享二维码">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -290,18 +423,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Dubbo服务引用源码分析
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/10/02/springmvc-request/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">SpringMvc源码启动分析</div>
+    <a href="/2019/11/14/dubbo-netty/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Dubbo通讯机制源码解析</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -328,7 +452,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务暴露源码分析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务暴露源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo提供者初始化源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo提供者初始化源码分析—</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Mysql执行计划详解"><span class="toc-number">1.</span> <span class="toc-text">Mysql执行计划详解</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#执行计划的-id"><span class="toc-number">1.0.0.0.1.</span> <span class="toc-text">执行计划的 id</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#执行计划的-select-type"><span class="toc-number">1.0.0.0.2.</span> <span class="toc-text">执行计划的 select_type</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#执行计划的-table"><span class="toc-number">1.0.0.0.3.</span> <span class="toc-text">执行计划的 table</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#执行计划的-type"><span class="toc-number">1.0.0.0.4.</span> <span class="toc-text">执行计划的 type</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
