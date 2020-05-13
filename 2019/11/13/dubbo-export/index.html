@@ -18,7 +18,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T05:13:49.033Z">
+<meta property="article:modified_time" content="2020-05-13T10:05:57.827Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="dubbo">
 <meta property="article:tag" content="spring">
@@ -249,7 +249,7 @@
 <pre><code>// 计算 service key，格式为 groupName/serviceName:serviceVersion:port。比如：
 //   dubbo/com.alibaba.dubbo.demo.DemoService:1.0.0:20880</code></pre><p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513125633996033041003000872.png" alt=""></p>
 <p><em>第一个方法在这里会将该service提供者信息注册到<strong>zk</strong>。<br>第二个方法是<strong>watch zk</strong>相应节点。<br>核心调用<font color='red'>registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener)</font>:</em><br><font size=2 color='navy blue'>对发布的dubbo服务的这个url进行监听， 当服务变化有时通知重新暴露服务， 以zookeeper为例，暴露服务会在zookeeper生成一个节点，当节点发生变化的时候会触发overrideSubscribeListener的notify方法重新暴露服务</font></p>
-
+<h6 id="如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-dubbo-export-3q"><a href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-dubbo-export-3q" class="headerlink" title="如需转载，请注明出处：https://jiangwenye.github.io/2019/11/13/dubbo-export/  3q!"></a><em>如需转载，请注明出处：<a href="https://jiangwenye.github.io/2019/11/13/dubbo-export/">https://jiangwenye.github.io/2019/11/13/dubbo-export/</a>  3q!</em></h6>
       	
       
     </div>
@@ -328,7 +328,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务暴露源码分析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务暴露源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo提供者初始化源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo提供者初始化源码分析—</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务暴露源码分析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务暴露源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo提供者初始化源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo提供者初始化源码分析—</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-dubbo-export-3q"><span class="toc-number">1.0.0.1.0.1.</span> <span class="toc-text">如需转载，请注明出处：https:&#x2F;&#x2F;jiangwenye.github.io&#x2F;2019&#x2F;11&#x2F;13&#x2F;dubbo-export&#x2F;  3q!</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
