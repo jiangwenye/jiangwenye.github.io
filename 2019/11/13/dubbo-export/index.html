@@ -9,16 +9,16 @@
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
   <title>Dubbo服务暴露源码分析【原创】 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Dubbo服务暴露源码分析【原创】duubo提供者初始化源码分析—">
+  <meta name="description" content="Dubbo服务暴露源码分析duubo提供者初始化源码分析—">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dubbo服务暴露源码分析【原创】">
 <meta property="og:url" content="http://jiangwenye.github.io/2019/11/13/dubbo-export/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Dubbo服务暴露源码分析【原创】duubo提供者初始化源码分析—">
+<meta property="og:description" content="Dubbo服务暴露源码分析duubo提供者初始化源码分析—">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T05:08:52.677Z">
+<meta property="article:modified_time" content="2020-05-13T05:11:14.017Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="dubbo">
 <meta property="article:tag" content="spring">
@@ -226,7 +226,7 @@
       
 
       	
-      		<h1 id="Dubbo服务暴露源码分析【原创】"><a href="#Dubbo服务暴露源码分析【原创】" class="headerlink" title="Dubbo服务暴露源码分析【原创】"></a><strong>Dubbo服务暴露源码分析<font color='wine red'>【原创】</font></strong></h1><h4 id="duubo提供者初始化源码分析—"><a href="#duubo提供者初始化源码分析—" class="headerlink" title="duubo提供者初始化源码分析—"></a><em>duubo提供者初始化源码分析—</em></h4><a id="more"></a>
+      		<h1 id="Dubbo服务暴露源码分析"><a href="#Dubbo服务暴露源码分析" class="headerlink" title="Dubbo服务暴露源码分析"></a><strong>Dubbo服务暴露源码分析</strong></h1><h4 id="duubo提供者初始化源码分析—"><a href="#duubo提供者初始化源码分析—" class="headerlink" title="duubo提供者初始化源码分析—"></a><em>duubo提供者初始化源码分析—</em></h4><a id="more"></a>
 <p><em>spring启动的时候用dubbo解析器解析<font color='green'>‘dubbo: service’</font>标签成<font color='blue'>serviceBean</font>类</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513122952908033041001500966.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513122952908033041001500966.png" alt=""></a><br><em>该类继承spring的<font color='olive green'>监听类</font>和<font color='olive green'>初始化类</font>，在<font color='red'>afterProperties()</font>方法中将该service对应的dubbo配置初始化设置，监听spring的容器bean<font color='olive green'>初始化完成事件</font>，<font color='red'>onApplication()</font>会在springboot<font color='olive green'>刷新完容器bean</font>调用。</em></p>
 <p><strong>主要看这个</strong><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123042036033041001501299.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123042036033041001501299.png" alt=""></a><br><em>进入该方法直接跳到</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123108268033041001501834.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123108268033041001501834.png" alt=""></a></p>
 <p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123136049033041001601504.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513123136049033041001601504.png" alt=""></a></p>
@@ -323,7 +323,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务暴露源码分析【原创】"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务暴露源码分析【原创】</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo提供者初始化源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo提供者初始化源码分析—</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务暴露源码分析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务暴露源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo提供者初始化源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo提供者初始化源码分析—</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>

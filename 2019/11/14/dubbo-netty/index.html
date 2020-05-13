@@ -9,16 +9,16 @@
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
   <title>Dubbo通讯机制源码解析【原创】 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Dubbo通讯机制源码解析【原创】dubbo底层运用netty发送接收消息源码分析—">
+  <meta name="description" content="Dubbo通讯机制源码解析dubbo底层运用netty发送接收消息源码分析—">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dubbo通讯机制源码解析【原创】">
 <meta property="og:url" content="http://jiangwenye.github.io/2019/11/14/dubbo-netty/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Dubbo通讯机制源码解析【原创】dubbo底层运用netty发送接收消息源码分析—">
+<meta property="og:description" content="Dubbo通讯机制源码解析dubbo底层运用netty发送接收消息源码分析—">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-11-14T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T05:08:39.904Z">
+<meta property="article:modified_time" content="2020-05-13T05:11:14.033Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="dubbo">
 <meta property="article:tag" content="spring">
@@ -226,7 +226,7 @@
       
 
       	
-      		<h1 id="Dubbo通讯机制源码解析【原创】"><a href="#Dubbo通讯机制源码解析【原创】" class="headerlink" title="Dubbo通讯机制源码解析【原创】"></a><strong>Dubbo通讯机制源码解析<font color='wine red'>【原创】</font></strong></h1><h4 id="dubbo底层运用netty发送接收消息源码分析—"><a href="#dubbo底层运用netty发送接收消息源码分析—" class="headerlink" title="dubbo底层运用netty发送接收消息源码分析—"></a><em>dubbo底层运用netty发送接收消息源码分析—</em></h4><a id="more"></a>
+      		<h1 id="Dubbo通讯机制源码解析"><a href="#Dubbo通讯机制源码解析" class="headerlink" title="Dubbo通讯机制源码解析"></a><strong>Dubbo通讯机制源码解析</strong></h1><h4 id="dubbo底层运用netty发送接收消息源码分析—"><a href="#dubbo底层运用netty发送接收消息源码分析—" class="headerlink" title="dubbo底层运用netty发送接收消息源码分析—"></a><em>dubbo底层运用netty发送接收消息源码分析—</em></h4><a id="more"></a>
 <h4 id="服务消费者"><a href="#服务消费者" class="headerlink" title="服务消费者"></a>服务消费者</h4><p><em>dubbo的消费者端netty默认是启动一个<font color='blue'>socketChannel</font>(也可以配置多个channel)，消费者端的消费相当于是多线程调用<font color='blue'>channel</font>的<font color='red'>send()</font>方法，深入dubbo中的netty源码详解：</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513113721060033041000800693.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513113721060033041000800693.png" alt=""></a><br><em>直接跳到<font color='blue'>NettyClientHandler</font>的<font color='red'>write()</font>方法这里调用的是<font color='blue'>WrapperChannelHandler</font>的<font color='red'>sent()</font>方法</em>    <a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114318040033041000801150.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114318040033041000801150.png" alt=""></a><br><em>进入到<font color='blue'>HeaderExchangeHandler</font>的<font color='red'>sent()</font>方法</em><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114409478033041000801549.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114409478033041000801549.png" alt=""></a><br>*<font color='red'>this.handler.sent()</font>就是发送请求到提供者<font color='blue'>nettyserver</font>的操作了。*</p>
 <p><em>主要看这个<font color='red'>DefaultFuture.sent()</font>这个方法，这个就是实现同步调用的关键了，因为<font color='blue'>channel</font>的<font color='red'>channelRead()</font>是托管给<font color='blue'>eventLoop</font>执行的，<font color='blue'>eventLoop</font>是单线程执行接收消息，像<font color='blue'>dubbo</font>这样复用长连接<font color='blue'>channel</font>的多线程发送但是单线程接收，同步调用的话无法知道哪个返回结果是属于哪个线程的，所以<font color='blue'>dubbo</font>的实现就是为每个<font color='pink'>requestId</font>绑定一个<font color='pink'>future,future</font>类似juc包里的一个异步但是可以通过<font color='blue'>get()</font>方法阻塞获取返回结果的类在调用的时候获取。<font color='purse'>（看另一篇文章）</font></em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115043561033041000900021.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115043561033041000900021.png" alt=""></a></p>
 <p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115108842033041000900035.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115108842033041000900035.png" alt=""></a></p>
@@ -318,7 +318,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo通讯机制源码解析【原创】"><span class="toc-number">1.</span> <span class="toc-text">Dubbo通讯机制源码解析【原创】</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dubbo底层运用netty发送接收消息源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">dubbo底层运用netty发送接收消息源码分析—</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务消费者"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">服务消费者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务提供者"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">服务提供者</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo通讯机制源码解析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo通讯机制源码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dubbo底层运用netty发送接收消息源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">dubbo底层运用netty发送接收消息源码分析—</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务消费者"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">服务消费者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务提供者"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">服务提供者</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
