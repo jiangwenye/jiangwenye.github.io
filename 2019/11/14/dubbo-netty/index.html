@@ -7,15 +7,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Archives: 2019/11 - CanJ--Grow</title>
+  <title>Dubbo通讯机制源码解析 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="CanJ--Grow">
-<meta property="og:url" content="http://jiangwenye.github.io/archives/2019/11/index.html">
+  <meta name="description" content="Dubbo通讯机制源码解析dubbo底层运用netty发送接收消息源码分析—">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dubbo通讯机制源码解析">
+<meta property="og:url" content="http://jiangwenye.github.io/2019/11/14/dubbo-netty/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
+<meta property="og:description" content="Dubbo通讯机制源码解析dubbo底层运用netty发送接收消息源码分析—">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2019-11-14T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-13T04:07:27.809Z">
 <meta property="article:author" content="CanJ">
+<meta property="article:tag" content="dubbo">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="源码">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -157,35 +164,28 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-dubbo-netty" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      Dubbo通讯机制源码解析
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/14/dubbo-netty/" class="archive-article-date">
+
+        
+        <a href="/2019/11/14/dubbo-netty/" class="archive-article-date">
   	<time datetime="2019-11-14T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-14</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/14/dubbo-netty/">Dubbo通讯机制源码解析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
+        
+      </header>
+    
+    
+      <div class="article-section">
+        <div class="tag-category">
+          
           
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
@@ -220,73 +220,129 @@
 
 
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+      	
+      		<h1 id="Dubbo通讯机制源码解析"><a href="#Dubbo通讯机制源码解析" class="headerlink" title="Dubbo通讯机制源码解析"></a><strong>Dubbo通讯机制源码解析</strong></h1><h4 id="dubbo底层运用netty发送接收消息源码分析—"><a href="#dubbo底层运用netty发送接收消息源码分析—" class="headerlink" title="dubbo底层运用netty发送接收消息源码分析—"></a><em>dubbo底层运用netty发送接收消息源码分析—</em></h4><a id="more"></a>
+<h4 id="服务消费者"><a href="#服务消费者" class="headerlink" title="服务消费者"></a>服务消费者</h4><p><em>dubbo的消费者端netty默认是启动一个<font color='blue'>socketChannel</font>(也可以配置多个channel)，消费者端的消费相当于是多线程调用<font color='blue'>channel</font>的<font color='red'>send()</font>方法，深入dubbo中的netty源码详解：</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513113721060033041000800693.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513113721060033041000800693.png" alt=""></a><br><em>直接跳到<font color='blue'>NettyClientHandler</font>的<font color='red'>write()</font>方法这里调用的是<font color='blue'>WrapperChannelHandler</font>的<font color='red'>sent()</font>方法</em>    <a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114318040033041000801150.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114318040033041000801150.png" alt=""></a><br><em>进入到<font color='blue'>HeaderExchangeHandler</font>的<font color='red'>sent()</font>方法</em><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114409478033041000801549.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513114409478033041000801549.png" alt=""></a><br>*<font color='red'>this.handler.sent()</font>就是发送请求到提供者<font color='blue'>nettyserver</font>的操作了。*</p>
+<p><em>主要看这个<font color='red'>DefaultFuture.sent()</font>这个方法，这个就是实现同步调用的关键了，因为<font color='blue'>channel</font>的<font color='red'>channelRead()</font>是托管给<font color='blue'>eventLoop</font>执行的，<font color='blue'>eventLoop</font>是单线程执行接收消息，像<font color='blue'>dubbo</font>这样复用长连接<font color='blue'>channel</font>的多线程发送但是单线程接收，同步调用的话无法知道哪个返回结果是属于哪个线程的，所以<font color='blue'>dubbo</font>的实现就是为每个<font color='pink'>requestId</font>绑定一个<font color='pink'>future,future</font>类似juc包里的一个异步但是可以通过<font color='blue'>get()</font>方法阻塞获取返回结果的类在调用的时候获取。<font color='purse'>（看另一篇文章）</font></em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115043561033041000900021.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115043561033041000900021.png" alt=""></a></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115108842033041000900035.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115108842033041000900035.png" alt=""></a></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115203739033041000900421.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115203739033041000900421.png" alt=""></a></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115251460033041000900436.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115251460033041000900436.png" alt=""></a><br><em>当服务调用的时候<font color ='red'>DubboInvoker.invoke()</font>会同步获取该请求id对应的返回结果(<font color ='red'>future.get()</font>),最终会调用<font color ='red'>HeaderExchangeChannel.request</font>的方法，可以看到在这个方法里新建了<font color ='blue'>request</font>对象然后绑定<font color ='blue'>future</font>,供外部<font color ='red'>get()</font>阻塞获取返回结果。</em></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115439200033041000900746.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115439200033041000900746.png" alt=""></a></p>
+<p><em>当消费者收到返回的时候netty会调用<font color='blue'>HeadeExchangeHandler</font>的<font color='red'>handlerResponse()</font>方法</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115555149033041000900764.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115555149033041000900764.png" alt=""></a></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115638727033041000900857.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115638727033041000900857.png" alt=""></a></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115701162033041001000170.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115701162033041001000170.png" alt=""></a></p>
+<p>*<font color='red'>invokeCallback</font>方法会唤醒<font color='blue'>defaultFuture</font>的get方法*</p>
+<hr>
+<h4 id="服务提供者"><a href="#服务提供者" class="headerlink" title="服务提供者"></a>服务提供者</h4><p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115941923033041001000313.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513115941923033041001000313.png" alt=""></a></p>
+<p><em>这里在new的时候会初始化一个线程池，这个线程池就是专门用来处理业务的，消费着的一些channel调用都是往线程池里提交任务。</em></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120027135033041001100022.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120027135033041001100022.png" alt=""></a></p>
+<p>*<font color='blue'>nettyserver</font>在收到请求后回调用<font color='red'>channelRead()</font>方法<font color='purse'>（一般客户端和服务端是单一长连接，所以nettyserver也只会有一个eventLoop处理这个channel）</font>，进入到<font color='blue'>MultiMessageHandler</font>的<font color='red'>revrived()</font>方法*</p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120226321033041001200717.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120226321033041001200717.png" alt=""></a></p>
+<p><em>进入<font color='blue'>AllCahnnelHandler</font>的<font color='red'>received()</font>方法</em></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120341949033041001301599.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120341949033041001301599.png" alt=""></a></p>
+<p><em>这里就可以看到是netty服务端是把请求扔到线程池中处理，前面用一个线程接收请求参数(<font color='red'>channel.isReadable()</font>该channel是否有butebuf可读，如果返回true则把该请求扔到线程中中)，不然单线程处理业务请求太吃力</em></p>
+<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120451934033041001400344.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513120451934033041001400344.png" alt=""></a></p>
+<p><em>对应一个<font color='red'>run()</font>方法，里面是如何处理各种的请求</em></p>
+
+      	
+      
+    </div>
+    
+    
+       <div class="article-info article-info-index">
+          
+<div class="share-icons">
+    <a class="weibo share-sns" data-type="weibo">
+      <i class="icon icon-weibo"></i>
+    </a>
+    <a class="weixin share-sns wxFab" data-type="weixin">
+      <i class="icon icon-weixin"></i>
+    </a>
+    <a class="qzone share-sns" data-type="qzone">
+      <i class="icon icon-qzone"></i>
+    </a>
+    <a class="google share-sns" data-type="google">
+      <i class="icon icon-google"></i>
+    </a>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2019/11/14/dubbo-netty/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
+       </div>
+    
+    <div class="clearfix"></div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Dubbo服务引用源码分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">Dubbo服务引用源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo通讯机制源码解析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo通讯机制源码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#dubbo底层运用netty发送接收消息源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">dubbo底层运用netty发送接收消息源码分析—</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务消费者"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">服务消费者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务提供者"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">服务提供者</span></a></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+        
+    </div>
+</aside>
 
-    
+
+
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s)
+  })();
+</script>
 
 
           </div>
@@ -310,8 +366,8 @@
 var yiliaConfig = {
     mathjax: true,
     isHome: false,
-    isPost: false,
-    isArchive: true,
+    isPost: true,
+    isArchive: false,
     isTag: false,
     isCategory: false,
     open_in_new: false,
