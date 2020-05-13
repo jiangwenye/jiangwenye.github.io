@@ -9,16 +9,16 @@
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
   <title>Dubbo服务引用源码分析【原创】 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Dubbo服务引用源码分析duubo消费者初始化流程源码分析—">
+  <meta name="description" content="Dubbo服务引用源码分析【原创】duubo消费者初始化流程源码分析—">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dubbo服务引用源码分析【原创】">
 <meta property="og:url" content="http://jiangwenye.github.io/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Dubbo服务引用源码分析duubo消费者初始化流程源码分析—">
+<meta property="og:description" content="Dubbo服务引用源码分析【原创】duubo消费者初始化流程源码分析—">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T05:06:42.385Z">
+<meta property="article:modified_time" content="2020-05-13T05:08:39.796Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="dubbo">
 <meta property="article:tag" content="spring">
@@ -226,7 +226,7 @@
       
 
       	
-      		<h1 id="Dubbo服务引用源码分析"><a href="#Dubbo服务引用源码分析" class="headerlink" title="Dubbo服务引用源码分析"></a><strong>Dubbo服务引用源码分析</strong></h1><h4 id="duubo消费者初始化流程源码分析—"><a href="#duubo消费者初始化流程源码分析—" class="headerlink" title="duubo消费者初始化流程源码分析—"></a><em>duubo消费者初始化流程源码分析—</em></h4><a id="more"></a>
+      		<h1 id="Dubbo服务引用源码分析【原创】"><a href="#Dubbo服务引用源码分析【原创】" class="headerlink" title="Dubbo服务引用源码分析【原创】"></a><strong>Dubbo服务引用源码分析<font color='wine red'>【原创】</font></strong></h1><h4 id="duubo消费者初始化流程源码分析—"><a href="#duubo消费者初始化流程源码分析—" class="headerlink" title="duubo消费者初始化流程源码分析—"></a><em>duubo消费者初始化流程源码分析—</em></h4><a id="more"></a>
 <p><font size = 3 face="微软雅黑">spring启动的时候利用dubbo的标签解析器将</font><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104838498033041000301008.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104838498033041000301008.png" alt=""></a><br>标签解析为<font color=green size =2>(“name:”baseEsOperationService””,”class”:”com.alibaba.dubbo.config.spring.RefrenceBean”…)</font></p>
 <h5 id="RefrenceBean该class结果如下："><a href="#RefrenceBean该class结果如下：" class="headerlink" title="RefrenceBean该class结果如下："></a>RefrenceBean该class结果如下：</h5><p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104611847033041000201600.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104611847033041000201600.png" alt=""></a><br><em>继承于spring的工厂bean类<font color=red>FactoryBean</font><br>所以一般的<font color=red>@Autowried（通过类的class注入）</font>是无法引入dubbo的service的，因为他经过spring的解析后，被定义为类的type为<font color=gray>refrenceBean.class</font>,需要通过<font color=blue>@Resource(通过bean的名称引入)</font></em></p>
 <p><em>在springboot启动的时候，会在<font color=red>afterProperties()</font>方法中设置dubbo中该interface对应的配置。引入该dubboservice时，会调用<font color=blue>refrenceBean</font>的<font color=red>getObject()</font>方法，进入方法内部进入到<font color=blue>RefrenceConfig</font>的<font color=red>init()</font>方法：</font></em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104918505033041000301508.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104918505033041000301508.png" alt=""></a><br><em>首先会对该类的一些dubbo配置做校验等等一些代码，以及后面需要构造消费者的RegistryUrl的一些参数统一放在一个map中，这里不做说明了。进入到<font color=red>createProxy()</font>方法</em></font>：<br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105053765033041000301780.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105053765033041000301780.png" alt=""></a></p>
@@ -319,7 +319,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务引用源码分析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务引用源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo消费者初始化流程源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo消费者初始化流程源码分析—</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RefrenceBean该class结果如下："><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">RefrenceBean该class结果如下：</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务引用源码分析【原创】"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务引用源码分析【原创】</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo消费者初始化流程源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo消费者初始化流程源码分析—</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RefrenceBean该class结果如下："><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">RefrenceBean该class结果如下：</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
