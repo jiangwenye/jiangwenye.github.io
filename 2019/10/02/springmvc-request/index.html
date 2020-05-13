@@ -7,15 +7,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Archives - CanJ--Grow</title>
+  <title>SpringMvc源码启动分析 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="CanJ--Grow">
-<meta property="og:url" content="http://jiangwenye.github.io/archives/index.html">
+  <meta name="description" content="SpringMvc源码启动分析SpringMvc源码启动分析(只分析针对老spring【web.xml】形式)—">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMvc源码启动分析">
+<meta property="og:url" content="http://jiangwenye.github.io/2019/10/02/springmvc-request/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
+<meta property="og:description" content="SpringMvc源码启动分析SpringMvc源码启动分析(只分析针对老spring【web.xml】形式)—">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2019-10-02T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-13T08:34:46.417Z">
 <meta property="article:author" content="CanJ">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="源码">
+<meta property="article:tag" content="springMvc">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -157,206 +164,28 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-springmvc-request" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/14/dubbo-netty/" class="archive-article-date">
-  	<time datetime="2019-11-14T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-14</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/14/dubbo-netty/">Dubbo通讯机制源码解析</a>
+    <h1 class="article-title" itemprop="name">
+      SpringMvc源码启动分析
     </h1>
   
 
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">Dubbo服务引用源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/13/dubbo-export/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/13/dubbo-export/">Dubbo服务暴露源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/02/springmvc-request/" class="archive-article-date">
+        
+        <a href="/2019/10/02/springmvc-request/" class="archive-article-date">
   	<time datetime="2019-10-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-02</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/02/springmvc-request/">SpringMvc源码启动分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
+        
+      </header>
+    
+    
+      <div class="article-section">
+        <div class="tag-category">
+          
           
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
@@ -391,16 +220,180 @@
 
 
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+      	
+      		<h1 id="SpringMvc源码启动分析"><a href="#SpringMvc源码启动分析" class="headerlink" title="SpringMvc源码启动分析"></a><strong>SpringMvc源码启动分析</strong></h1><h4 id="SpringMvc源码启动分析-只分析针对老spring【web-xml】形式-—"><a href="#SpringMvc源码启动分析-只分析针对老spring【web-xml】形式-—" class="headerlink" title="SpringMvc源码启动分析(只分析针对老spring【web.xml】形式)—"></a><em>SpringMvc源码启动分析(只分析针对老spring【web.xml】形式)—</em></h4><a id="more"></a>
+
+<p>在Spring的核心配置文件<strong>web.xml</strong>中，配置了<strong>ContextLoaderListener</strong>监听器</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener</span><br><span class="line">	<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>contextLoaderListener</strong>实现了<strong>ServletContextListener</strong>接口</p>
+<h6 id="当一个Web应用部署到容器内时-eg-tomcat-，在Web应用开始响应执行用户请求前，以下步骤会被依次执行"><a href="#当一个Web应用部署到容器内时-eg-tomcat-，在Web应用开始响应执行用户请求前，以下步骤会被依次执行" class="headerlink" title="当一个Web应用部署到容器内时(eg.tomcat)，在Web应用开始响应执行用户请求前，以下步骤会被依次执行:"></a>当一个Web应用部署到容器内时(eg.tomcat)，在Web应用开始响应执行用户请求前，以下步骤会被依次执行:</h6><ul>
+<li>部署描述文件中(eg.tomcat的web.xml)由<listener>元素标记的事件监听器会被创建和初始化对于所有事件监听器，如果实现了<strong>ServletContextListener</strong>接口，将会执行其实现的<font color='blue'><strong>contextInitialized()</strong></font>方法</li>
+<li>部署描述文件中由<font color='green'>&lt;filter&gt;</font>元素标记的过滤器会被创建和初始化，并调用其<font color='red'>init()</font>方法</li>
+<li>部署描述文件中由<font color='green'>&lt;servlet&gt;</font>元素标记的servlet会根据<load-on-startup>的权值按顺序创建和初始化，并调用其<font color='red'>init()</font>方法</li>
+</ul>
+<h5 id="springmvc启动的流程图大概如下："><a href="#springmvc启动的流程图大概如下：" class="headerlink" title="springmvc启动的流程图大概如下："></a>springmvc启动的流程图大概如下：</h5><p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513150409096071041026100271.png" alt=""></p>
+<h6 id="常见的web-xml如下："><a href="#常见的web-xml如下：" class="headerlink" title="常见的web.xml如下："></a>常见的web.xml如下：</h6><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">display-name</span>&gt;</span>Web Application<span class="tag">&lt;/<span class="name">display-name</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!--全局变量配置--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:applicationContext-*.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!--监听器--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">&lt;!--解决乱码问题的filter--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>utf-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/*<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!--Restful前端控制器--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>springMVC_rest<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:spring-mvc.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>springMVC_rest<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Listener的初始化过程"><a href="#Listener的初始化过程" class="headerlink" title="Listener的初始化过程"></a>Listener的初始化过程</h5><p>首先定义了：<font color='blue'>&lt;context-param&gt;</font>标签，用于配置一个全局变量，<font color='blue'>&lt;context-param&gt;</font>标签的内容读取后会被放进application中，做为Web应用的全局变量使用，接下来创建<strong>listener</strong>时会使用到这个全局变量，因此，Web应用在容器中部署后，进行初始化时会先读取这个全局变量，之后再进行上述讲解的初始化启动过程。</p>
+<p><strong>ContextLoaderListener</strong>的<font color='red'>contextInitialized()</font>方法：<br><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513150644655071041026201183.png" alt=""></p>
+<p>进入<strong>initWebApplicationContext()</strong>方法：<br><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513150715490071041026401619.png" alt=""></p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513150743695071041026401645.png" alt=""><br>这里的<strong>ConfigurableWebApplicationContext</strong>实现类是<strong>XmlWebApplicationContext</strong>（<font color='red'>xml解析web上下文</font>）</p>
+<p>进入<strong>configureAndRefreshWebApplicationContext()</strong>方法：</p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513153016684071041026500343.png" alt=""></p>
+<p>进入<strong>wac.refresh()</strong>方法：<br><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513155008383071041026600275.png" alt=""></p>
+<p>进入具体的实现类发现是<strong>AbstractApplicationContext</strong>类，springboot启动的时候<strong>refreshContext()</strong>方法也是调用的这里的refresh()方法来解析加载ioc容器和自动配置。（<font color='red'>注意:springBoot中的war包启动并没有用到<strong>contextLoaderListener</strong>，仅限老spring</font>）</p>
+<h5 id="接下来进入DispatcherServlet的初始化：接下来进入DispatcherServlet的初始化："><a href="#接下来进入DispatcherServlet的初始化：接下来进入DispatcherServlet的初始化：" class="headerlink" title="接下来进入DispatcherServlet的初始化：接下来进入DispatcherServlet的初始化："></a>接下来进入DispatcherServlet的初始化：接下来进入DispatcherServlet的初始化：</h5><p><strong>DispatcherServlet→FrameWorkServlet→HttpServletBean</strong><br>进入<strong>HttpServletBean</strong>的<strong>init()</strong>方法：</p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513155738705071041026901947.png" alt=""><br>进入<strong>FrameServlet</strong>的<strong>initServletBean()</strong>方法:<br><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160110694071041027000993.png" alt=""></p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160137327071041027500802.png" alt=""></p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160207275071041027501361.png" alt=""></p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160245922071041027601679.png" alt=""></p>
+<p><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160245922071041027601679.png" alt=""></p>
+<p>创建<strong>WebApplicationContext</strong>：<br><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160413313071041027700247.png" alt=""><br><strong>ApplicationContxt</strong>被实例化之后，做一些配置，设置当前的<strong>Environment</strong>,设置父类(如果有的话)，获取<strong>contextLocation</strong>的位置(<font color='red'>web.xml中可以设置，当然也有默认值</font>)</p>
+<p>回到<strong>DispatcherServlet</strong>的<strong>onfresh()</strong>方法<br><img src="http://prod-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513160847325071041027800419.png" alt=""><br>这里就是初始化springmvc的一些组件：<strong>resolver,handlermapping,handlerAdapte</strong>r等等</p>
+<hr>
+<p>以下文章参考自：<a href="https://www.cnblogs.com/sw008/p/11054263.html" target="_blank" rel="noopener">https://www.cnblogs.com/sw008/p/11054263.html</a></p>
+<h4 id="着重分析注册HandlerMapping"><a href="#着重分析注册HandlerMapping" class="headerlink" title="着重分析注册HandlerMapping:"></a>着重分析注册HandlerMapping:</h4><h5 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h5><p>Spring Mvc通过<strong>HandlerMapping</strong>返回执行链。在Spring容器中有多中不同的<strong>HandlerMapping</strong>实现，其对应不同的映射配置方式。在使用<strong>@RequestMapping</strong>注解时，SpringMvc通过<strong>RequestMappingHandlerMapping</strong>类的Bean解析、注册、缓存映射关系，并提供匹配执行链的功能。</p>
+<h6 id="RequestMappingHandlerMapping"><a href="#RequestMappingHandlerMapping" class="headerlink" title="RequestMappingHandlerMapping"></a>RequestMappingHandlerMapping</h6><p><img src="https://img-blog.csdnimg.cn/20190220205000744.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoYW5jaGFodWExMjM0NTY=,size_16,color_FFFFFF,t_70" alt=""></p>
+<h6 id="1-解析-url-method-映射关系-思路"><a href="#1-解析-url-method-映射关系-思路" class="headerlink" title="1 解析 url-method 映射关系 思路"></a>1 解析 url-method 映射关系 思路</h6><p><strong>RequestMappingHandlerMapping</strong>实现了<strong>InitializingBean</strong>接口，在其初始化时执行<strong>afterPropertiesSet</strong>方法。在此方法中其遍历<strong>ApplicationContext</strong>中所有Bean，通过反射判断其类型Class上是否有@Controller或@RequestMapping注解。</p>
+<p>若Class上有此类注解说明这个Bean是Controller。则执行<strong>detectHandlerMethods(beanName)</strong>方法，反射<strong>(clazz.getMethods())</strong>并遍历此Bean的Method[]，通过反射<strong>method.getAnnotation(RequestMapping)</strong>判断并获取方法上标注的@RequestMapping配置信息。将@RequestMapping信息封装成<strong>RequestMappingInfo</strong>，将此method封装成<strong>HandlerMethod</strong>。注册到<strong>RequestMappingHandlerMapping</strong>的<strong>mappingRegistry</strong>中。</p>
+<h6 id="2-注册并缓存-url-method-映射关系"><a href="#2-注册并缓存-url-method-映射关系" class="headerlink" title="2 注册并缓存 url-method 映射关系"></a>2 注册并缓存 url-method 映射关系</h6><p><strong>RequestMappingHandlerMapping</strong>中的<strong>mappingRegistry</strong>对象中成员变量：各种Map还有一个读写锁。<br><img src="https://img-blog.csdnimg.cn/20190217183411258.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoYW5jaGFodWExMjM0NTY=,size_16,color_FFFFFF,t_70" alt=""></p>
+<p><strong>mappingRegistry</strong>的各个主要变量<br><img src="https://img-blog.csdnimg.cn/20190217183853315.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoYW5jaGFodWExMjM0NTY=,size_16,color_FFFFFF,t_70" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190217183943707.png" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190217184056125.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoYW5jaGFodWExMjM0NTY=,size_16,color_FFFFFF,t_70" alt=""></p>
+<p><img src="https://img-blog.csdnimg.cn/20190217184230587.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3NoYW5jaGFodWExMjM0NTY=,size_16,color_FFFFFF,t_70" alt=""></p>
+<p>3 接收请求在RequestMappingHandlerMapping中查找返回映射</p>
+<p>通过request的请求URL从urlLookup中找到对应RequestMappingInfo，再通过RequestMappingInfo在mappingLookup中找到HandlerMethod。HandlerMethod为url对应的@RequestMapping标注执行方法。</p>
+<p>解析注册具体实现<br>WebConfig上使用了@EnableWebMvc注解，这个注解导入了DelegatingWebMvcConfiguration配置，在DelegatingWebMvcConfiguration的父类WebMvcConfigurationSupport创建了RequestMappingHandlerMapping。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RequestMappingHandlerMapping <span class="title">requestMappingHandlerMapping</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    RequestMappingHandlerMapping mapping = createRequestMappingHandlerMapping();</span><br><span class="line">    <span class="comment">//...省略属性设置</span></span><br><span class="line">    <span class="keyword">return</span> mapping;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="RequestMappingHandlerMapping加载"><a href="#RequestMappingHandlerMapping加载" class="headerlink" title="RequestMappingHandlerMapping加载"></a>RequestMappingHandlerMapping加载</h4><h5 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a>@RequestMapping</h5><p>我一开始也不知道创建RequestMappingHandlerMapping作用，后来看到它的类图就明白加载过程。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/10236819-cb2a5a486df9a01c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/310/format/webp" alt=""></p>
+<p>RequestMappingHandlerMapping的父类实现了InitializingBean，那么在初始化的时候就会调用afterPropertiesSet方法。看下父类afterPropertiesSet的实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    initHandlerMethods();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initHandlerMethods</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Looking for request mappings in application context: "</span> + getApplicationContext());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//detectHandlerMethodsInAncestorContexts默认false，所以是得到所有的beanNames</span></span><br><span class="line">    String[] beanNames = (<span class="keyword">this</span>.detectHandlerMethodsInAncestorContexts ?</span><br><span class="line">            BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getApplicationContext(), Object.class) :</span><br><span class="line">            getApplicationContext().getBeanNamesForType(Object<span class="class">.<span class="keyword">class</span>))</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (String beanName : beanNames) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) &#123;</span><br><span class="line">            Class&lt;?&gt; beanType = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                beanType = getApplicationContext().getType(beanName);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">                <span class="comment">// An unresolvable bean type, probably from a lazy bean - let's ignore it.</span></span><br><span class="line">                <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                    logger.debug(<span class="string">"Could not resolve target class for bean with name '"</span> + beanName + <span class="string">"'"</span>, ex);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//2. isHandler由子类实现</span></span><br><span class="line">            <span class="keyword">if</span> (beanType != <span class="keyword">null</span> &amp;&amp; isHandler(beanType)) &#123;</span><br><span class="line">                <span class="comment">//3. 查找controller中有@RequestMapping注解的方法,并注册到请求</span></span><br><span class="line">                detectHandlerMethods(beanName);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//空方法</span></span><br><span class="line">    handlerMethodsInitialized(getHandlerMethods());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>afterPropertiesSet实现交给了initHandlerMethods，initHandlerMethods的执行流程如下:</p>
+<ol>
+<li>得到所有的beanName</li>
+<li>遍历beanNames,调用isHandler判断bean是不是一个controller，isHandler由子类实现，RequestMappingHandlerMapping的实现如下，判断bean中有没有Controller或RequestMapping</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isHandler</span><span class="params">(Class&lt;?&gt; beanType)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (AnnotatedElementUtils.hasAnnotation(beanType, Controller<span class="class">.<span class="keyword">class</span>) ||</span></span><br><span class="line"><span class="class">            <span class="title">AnnotatedElementUtils</span>.<span class="title">hasAnnotation</span>(<span class="title">beanType</span>, <span class="title">RequestMapping</span>.<span class="title">class</span>))</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>1.查找controller中有@RequestMapping注解的方法,并注册到请求容器中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">detectHandlerMethods</span><span class="params">(<span class="keyword">final</span> Object handler)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//1. 得到controller真实类型</span></span><br><span class="line">    Class&lt;?&gt; handlerType = (handler <span class="keyword">instanceof</span> String ?</span><br><span class="line">            getApplicationContext().getType((String) handler) : handler.getClass());</span><br><span class="line">    <span class="keyword">final</span> Class&lt;?&gt; userType = ClassUtils.getUserClass(handlerType);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3. 封装所有的Method和RequestMappingInfo到Map中</span></span><br><span class="line">    Map&lt;Method, T&gt; methods = MethodIntrospector.selectMethods(userType,</span><br><span class="line">            <span class="keyword">new</span> MethodIntrospector.MetadataLookup&lt;T&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> T <span class="title">inspect</span><span class="params">(Method method)</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="comment">//2. 根据方法上的@RequestMapping信息构建RequestMappingInfo</span></span><br><span class="line">                        <span class="keyword">return</span> getMappingForMethod(method, userType);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Invalid mapping on handler class ["</span> +</span><br><span class="line">                                userType.getName() + <span class="string">"]: "</span> + method, ex);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">        logger.debug(methods.size() + <span class="string">" request handler methods found on "</span> + userType + <span class="string">": "</span> + methods);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;Method, T&gt; entry : methods.entrySet()) &#123;</span><br><span class="line">        Method invocableMethod = AopUtils.selectInvocableMethod(entry.getKey(), userType);</span><br><span class="line">        T mapping = entry.getValue();</span><br><span class="line">        <span class="comment">//4. 将RequestMappingInfo注册到请求容器中</span></span><br><span class="line">        registerHandlerMethod(handler, invocableMethod, mapping);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>detectHandlerMethods是加载请求核心方法，执行流程如下:</p>
+<ol>
+<li>得到controller真实类型,controller可能被代理</li>
+<li>根据方法上的@RequestMapping信息构建RequestMappingInfo,由RequestMappingHandlerMapping实现。从代码上可以看出，必须方法上声明@RequestMapping，类上的@RequestMapping才会生效。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> RequestMappingInfo <span class="title">getMappingForMethod</span><span class="params">(Method method, Class&lt;?&gt; handlerType)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//1. 根据方法上的@RequestMapping创建RequestMappingInfo</span></span><br><span class="line">    RequestMappingInfo info = createRequestMappingInfo(method);</span><br><span class="line">    <span class="keyword">if</span> (info != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//2. 查找类上是否有@RequestMapping，如果有则和方法上的组合</span></span><br><span class="line">        RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);</span><br><span class="line">        <span class="keyword">if</span> (typeInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">            info = typeInfo.combine(info);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> info;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>封装所有的Method和RequestMappingInfo到Map中</li>
+<li>将RequestMappingInfo注册到请求容器中<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">registerHandlerMethod</span><span class="params">(Object handler, Method method, T mapping)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mappingRegistry.register(mapping, handler, method);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这里就不再分析register方法的实现过程，主要是根据handler，method封装成HandlerMethod，再请求的时候会得到HandlerMethod，然后反射调用。</li>
+</ol>
+
+      	
+      
+    </div>
+    
+    
+       <div class="article-info article-info-index">
+          
+<div class="share-icons">
+    <a class="weibo share-sns" data-type="weibo">
+      <i class="icon icon-weibo"></i>
+    </a>
+    <a class="weixin share-sns wxFab" data-type="weixin">
+      <i class="icon icon-weixin"></i>
+    </a>
+    <a class="qzone share-sns" data-type="qzone">
+      <i class="icon icon-qzone"></i>
+    </a>
+    <a class="google share-sns" data-type="google">
+      <i class="icon icon-google"></i>
+    </a>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2019/10/02/springmvc-request/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
+       </div>
+    
+    <div class="clearfix"></div>
   </div>
 </article>
-  
-  
-    </div></section>
-  
 
-    
+  
+<nav id="article-nav">
+  
+    <a href="/2019/11/13/dubbo-export/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Dubbo服务暴露源码分析
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SpringMvc源码启动分析"><span class="toc-number">1.</span> <span class="toc-text">SpringMvc源码启动分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SpringMvc源码启动分析-只分析针对老spring【web-xml】形式-—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">SpringMvc源码启动分析(只分析针对老spring【web.xml】形式)—</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#当一个Web应用部署到容器内时-eg-tomcat-，在Web应用开始响应执行用户请求前，以下步骤会被依次执行"><span class="toc-number">1.0.0.1.0.1.</span> <span class="toc-text">当一个Web应用部署到容器内时(eg.tomcat)，在Web应用开始响应执行用户请求前，以下步骤会被依次执行:</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#springmvc启动的流程图大概如下："><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">springmvc启动的流程图大概如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#常见的web-xml如下："><span class="toc-number">1.0.0.1.1.1.</span> <span class="toc-text">常见的web.xml如下：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Listener的初始化过程"><span class="toc-number">1.0.0.1.2.</span> <span class="toc-text">Listener的初始化过程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#接下来进入DispatcherServlet的初始化：接下来进入DispatcherServlet的初始化："><span class="toc-number">1.0.0.1.3.</span> <span class="toc-text">接下来进入DispatcherServlet的初始化：接下来进入DispatcherServlet的初始化：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#着重分析注册HandlerMapping"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">着重分析注册HandlerMapping:</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#整体思路"><span class="toc-number">1.0.0.2.1.</span> <span class="toc-text">整体思路</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#RequestMappingHandlerMapping"><span class="toc-number">1.0.0.2.1.1.</span> <span class="toc-text">RequestMappingHandlerMapping</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#1-解析-url-method-映射关系-思路"><span class="toc-number">1.0.0.2.1.2.</span> <span class="toc-text">1 解析 url-method 映射关系 思路</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-注册并缓存-url-method-映射关系"><span class="toc-number">1.0.0.2.1.3.</span> <span class="toc-text">2 注册并缓存 url-method 映射关系</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RequestMappingHandlerMapping加载"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">RequestMappingHandlerMapping加载</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RequestMapping"><span class="toc-number">1.0.0.3.1.</span> <span class="toc-text">@RequestMapping</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s)
+  })();
+</script>
 
 
           </div>
@@ -424,8 +417,8 @@
 var yiliaConfig = {
     mathjax: true,
     isHome: false,
-    isPost: false,
-    isArchive: true,
+    isPost: true,
+    isArchive: false,
     isTag: false,
     isCategory: false,
     open_in_new: false,
