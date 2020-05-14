@@ -9,16 +9,16 @@
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
   <title>Canal一些开发问题 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Canal一些开发问题开发canal过程中需要注意的一些问题：数据问题和性能问题!–more–&gt; Canal会导致消息重复吗？答：会，这从两个大的方面谈起。     1）Canal instance初始化时，根据“消费者的Cursor”来确定binlog的起始位置，但是Cursor在ZK中的保存是滞后的（间歇性刷新），所以Canal instance获得的起始position一定不会大于消费">
+  <meta name="description" content="Canal一些开发问题开发canal过程中需要注意的一些问题：数据问题和性能问题">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Canal一些开发问题">
 <meta property="og:url" content="http://jiangwenye.github.io/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Canal一些开发问题开发canal过程中需要注意的一些问题：数据问题和性能问题!–more–&gt; Canal会导致消息重复吗？答：会，这从两个大的方面谈起。     1）Canal instance初始化时，根据“消费者的Cursor”来确定binlog的起始位置，但是Cursor在ZK中的保存是滞后的（间歇性刷新），所以Canal instance获得的起始position一定不会大于消费">
+<meta property="og:description" content="Canal一些开发问题开发canal过程中需要注意的一些问题：数据问题和性能问题">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2020-03-15T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-14T08:34:13.139Z">
+<meta property="article:modified_time" content="2020-05-14T08:35:14.494Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="mysql">
 <meta property="article:tag" content="中间件">
@@ -231,7 +231,7 @@
       
 
       	
-      		<h1 id="Canal一些开发问题"><a href="#Canal一些开发问题" class="headerlink" title="Canal一些开发问题"></a><strong>Canal一些开发问题</strong></h1><h4 id="开发canal过程中需要注意的一些问题：数据问题和性能问题"><a href="#开发canal过程中需要注意的一些问题：数据问题和性能问题" class="headerlink" title="开发canal过程中需要注意的一些问题：数据问题和性能问题"></a><em>开发canal过程中需要注意的一些问题：数据问题和性能问题</em></h4><p>!–more–&gt;</p>
+      		<h1 id="Canal一些开发问题"><a href="#Canal一些开发问题" class="headerlink" title="Canal一些开发问题"></a><strong>Canal一些开发问题</strong></h1><h4 id="开发canal过程中需要注意的一些问题：数据问题和性能问题"><a href="#开发canal过程中需要注意的一些问题：数据问题和性能问题" class="headerlink" title="开发canal过程中需要注意的一些问题：数据问题和性能问题"></a><em>开发canal过程中需要注意的一些问题：数据问题和性能问题</em></h4><a id="more"></a>
 <h5 id="Canal会导致消息重复吗？"><a href="#Canal会导致消息重复吗？" class="headerlink" title="Canal会导致消息重复吗？"></a>Canal会导致消息重复吗？</h5><pre><code>答：会，这从两个大的方面谈起。
     1）Canal instance初始化时，根据“消费者的Cursor”来确定binlog的起始位置，但是Cursor在ZK中的保存是滞后的（间歇性刷新），所以Canal instance获得的起始position一定不会大于消费者真实已见的position,这种情况主要出现在主从切换的时候
     2）Consumer端，因为某种原因的rollback，也可能导致一个batch内的所有消息重发，此时可能导致重复消费。
