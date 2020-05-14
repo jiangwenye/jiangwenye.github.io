@@ -7,17 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>分类 - CanJ--Grow</title>
+  <title>Canal架构组件 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="分类">
-<meta property="og:url" content="http://jiangwenye.github.io/categories/index.html">
+  <meta name="description" content="Canal架构组件转载自—https:&#x2F;&#x2F;blog.csdn.net&#x2F;u013200380&#x2F;article&#x2F;details&#x2F;80963569#31-canal的设计理念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Canal架构组件">
+<meta property="og:url" content="http://jiangwenye.github.io/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
+<meta property="og:description" content="Canal架构组件转载自—https:&#x2F;&#x2F;blog.csdn.net&#x2F;u013200380&#x2F;article&#x2F;details&#x2F;80963569#31-canal的设计理念">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
-<meta property="article:published_time" content="2020-05-12T04:49:27.000Z">
-<meta property="article:modified_time" content="2020-05-12T05:50:14.708Z">
+<meta property="article:published_time" content="2020-02-06T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-14T08:20:07.956Z">
 <meta property="article:author" content="CanJ">
+<meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -159,20 +162,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="categories-" class="article article-type-categories " itemscope itemprop="blogPost">
+            <article id="post-canal架构组件" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      分类
+      Canal架构组件
     </h1>
   
 
         
-        <a href="/categories/index.html" class="archive-article-date">
-  	<time datetime="2020-05-12T04:49:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-12</time>
+        <a href="/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/" class="archive-article-date">
+  	<time datetime="2020-02-06T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-06</time>
 </a>
         
       </header>
@@ -182,7 +185,29 @@
         <div class="tag-category">
           
           
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
           
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/mysql/" class="article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
         </div>
       </div>
@@ -190,15 +215,84 @@
     <div class="article-entry" itemprop="articleBody">
       
 
-      <div class="category-all-page">
+      	
+      		<h1 id="Canal架构组件"><a href="#Canal架构组件" class="headerlink" title="Canal架构组件"></a><strong>Canal架构组件</strong></h1><p><em>转载自—<a href="https://blog.csdn.net/u013200380/article/details/80963569#31-canal的设计理念" target="_blank" rel="noopener">https://blog.csdn.net/u013200380/article/details/80963569#31-canal的设计理念</a></em></p>
+<a id="more"></a>
+<h5 id="1-mysql的binlog"><a href="#1-mysql的binlog" class="headerlink" title="1.mysql的binlog"></a>1.mysql的binlog</h5><p>  它记录了所有的DDL和DML(除了数据查询语句)语句，以事件形式记录，还包含语句所执行的消耗的时间。主要用来备份和数据同步。</p>
+<p>binlog 有三种模式：<strong>STATEMENT、ROW、MIXED</strong></p>
+<p>1.<strong>STATEMENT</strong> 记录的是执行的sql语句<br>2.<strong>ROW</strong> 记录的是真实的行数据记录<br>3.<strong>MIXED</strong> 记录的是1+2，优先按照1的模式记录</p>
+<p>举例来说，下面的sql </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> age=<span class="number">20</span></span><br></pre></td></tr></table></figure>
 
+<p>对应<strong>STATEMENT</strong>模式只有一条记录，对应<strong>ROW</strong>模式则有可能有成千上万条记录（取决数据库中的记录数）。</p>
+<h6 id="1-2-mysql-的主从复制过程"><a href="#1-2-mysql-的主从复制过程" class="headerlink" title="1.2 mysql 的主从复制过程"></a>1.2 mysql 的主从复制过程</h6><p><img src="https://img-blog.csdn.net/20180708213746374?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMyMDAzODA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""></p>
+<ol>
+<li>Slave 上面的IO线程连接上 Master，并请求从指定日志文件的指定位置(或者从最开始的日志)之后的日志内容;</li>
+<li>Master 接收到来自 Slave 的 IO 线程的请求后，通过负责复制的 IO 线程根据请求信息读取指定日志指定位置之后的日志信息，返回给 Slave 端的 IO 线程。返回信息中除了日志所包含的信息之外，还包括本次返回的信息在 Master 端的 Binary Log 文件的名称以及在 Binary Log 中的位置;</li>
+<li>Slave 的 IO 线程接收到信息后，将接收到的日志内容依次写入到 Slave 端的Relay Log文件(mysql-relay-bin.xxxxxx)的最末端，并将读取到的Master端的bin-log的文件名和位置记录到master- info文件中，以便在下一次读取的时候能够清楚的高速Master“我需要从某个bin-log的哪个位置开始往后的日志内容，请发给我”</li>
+<li>Slave 的 SQL 线程检测到 Relay Log 中新增加了内容后，会马上解析该 Log 文件中的内容成为在 Master 端真实执行时候的那些可执行的 Query 语句，并在自身执行这些 Query。这样，实际上就是在 Master 端和 Slave 端执行了同样的 Query，所以两端的数据是完全一样的。<br>当然这个过程本质上还是存在一定的延迟的。<br>mysql的binlog文件长这个样子。<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql-bin.003831</span><br><span class="line">mysql-bin.003840  </span><br><span class="line">mysql-bin.003849  </span><br><span class="line">mysql-bin.003858</span><br></pre></td></tr></table></figure>
 
-      	<div class="category-all">
-      	<ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/dubbo/">dubbo</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/springMvc/">springMvc</a><span class="category-list-count">4</span></li></ul>
-      	</div>
+</li>
+</ol>
+<h6 id="1-3-canal能够同步数据的原理"><a href="#1-3-canal能够同步数据的原理" class="headerlink" title="1.3 canal能够同步数据的原理"></a>1.3 canal能够同步数据的原理</h6><p>理解了mysql的主从同步的机制再来看canal就比较清晰了，canal主要是听过伪装成mysql从server来向主server拉取数据。 </p>
+<p><img src="https://img-blog.csdn.net/20180708214134214?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMyMDAzODA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""><br>canal模拟mysql slave的交互协议，伪装自己为mysql slave，向mysql master发送dump协议<br>mysql master收到dump请求，开始推送binary log给slave(也就是canal)<br>canal解析binary log对象(原始为byte流)<br>2. quick start<br>直接引用 阿里的就不错，这里是一个阿里的单机版配置。<br><a href="https://github.com/alibaba/canal/wiki/QuickStart" target="_blank" rel="noopener">https://github.com/alibaba/canal/wiki/QuickStart</a><br>主要的点就是：</p>
+<ol>
+<li>数据库配置，需要记录bin_log 需要使用row模式，需要创建用户给canal使用</li>
+<li>canal配置相应的主库地址，server_id在mysql的集群中不能重复,过滤哪些表使用的正则。</li>
+<li>这个是一个单机的canal的搭建，并不是HA的模式。<h5 id="3-canal-的设计"><a href="#3-canal-的设计" class="headerlink" title="3. canal 的设计"></a>3. canal 的设计</h5><h6 id="3-1-canal的设计理念"><a href="#3-1-canal的设计理念" class="headerlink" title="3.1 canal的设计理念"></a>3.1 canal的设计理念</h6>canal的组件化设计非常好，有点类似于tomcat的设计。使用组合设计，依赖倒置，面向接口的设计。<br><img src="https://img-blog.csdn.net/20180715112012374?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMyMDAzODA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""></li>
+</ol>
+<h6 id="3-2-canal的组件有哪些"><a href="#3-2-canal的组件有哪些" class="headerlink" title="3.2 canal的组件有哪些"></a>3.2 canal的组件有哪些</h6><ol>
+<li>canal server 这个代表了我们部署的一个canal 应用</li>
+<li>canal instance 这个代表了一个canal server中的多个 mysql instance ,从这一点说明一个canal server可以搜集多个库的数据，在canal中叫 destionation。</li>
+</ol>
+<p>  每个canal instance 有多个组件构成。在conf/spring/default-instance.xml中配置了这些组件。他其实是使用了spring的容器来进行这些组件管理的。</p>
+<h6 id="3-3-instance-包含的组件"><a href="#3-3-instance-包含的组件" class="headerlink" title="3.3 instance 包含的组件"></a>3.3 instance 包含的组件</h6><p>这里是一个cannalInstance工作所包含的大组件。截取自 conf/spring/default-instance.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"instance"</span> <span class="attr">class</span>=<span class="string">"com.alibaba.otter.canal.instance.spring.CanalInstanceWithSpring"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"destination"</span> <span class="attr">value</span>=<span class="string">"$&#123;canal.instance.destination&#125;"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"eventParser"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">ref</span> <span class="attr">local</span>=<span class="string">"eventParser"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"eventSink"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">ref</span> <span class="attr">local</span>=<span class="string">"eventSink"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"eventStore"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">ref</span> <span class="attr">local</span>=<span class="string">"eventStore"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"metaManager"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">ref</span> <span class="attr">local</span>=<span class="string">"metaManager"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"alarmHandler"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">ref</span> <span class="attr">local</span>=<span class="string">"alarmHandler"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-      </div>
+<ol>
+<li><p>eventParser 最基本的组件，类似于mysql从库的dump线程，负责从master中获取bin_log<br><img src="https://img-blog.csdn.net/20180715112141680?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMyMDAzODA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""></p>
+</li>
+<li><p>eventSink 数据的归集，使用设置的filter对bin log进行过滤，工作的过程如下。<br><img src="https://img-blog.csdn.net/20180715112520176?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMyMDAzODA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""></p>
+</li>
+<li><p>eventStore 用来存储filter过滤后的数据，canal目前的数据只在这里存储，工作流程如下。<br><img src="https://img-blog.csdn.net/20180715112547717?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTMyMDAzODA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt=""></p>
+</li>
+<li><p>metaManager 用来存储一些原数据，比如消费到的游标，当前活动的server等信息</p>
+</li>
+<li><p>alarmHandler 报警，这个一般情况下就是错误日志，理论上应该是可以定制成邮件等形式，但是目前不支持</p>
+</li>
+</ol>
+<h6 id="3-4-各个组件目前支持的类型"><a href="#3-4-各个组件目前支持的类型" class="headerlink" title="3.4 各个组件目前支持的类型"></a>3.4 各个组件目前支持的类型</h6><p>canal采用了spring bean container的方式来组装一个canal instance ,目的是为了能够更加灵活。</p>
+<p>eventParser 目前只有三种 </p>
+<ul>
+<li>1.1. MysqlEventParser 用于解析mysql的日志 </li>
+<li>1.2. GroupEventParser 多个eventParser的集合，理论上是对应了分表的情况，可以通过这个合并到一起 </li>
+<li>1.3. RdsLocalBinlogEventParser 基于rds的binlog 的复制</li>
+</ul>
+<p>eventSink 目前只有EntryEventSink 就是基于mysql的binlog数据对象的处理操作<br>eventStore 目前只有一种 MemoryEventStoreWithBuffer，内部使用了一个ringbuffer 也就是说canal解析的数据都是存在内存中的，并没有到zookeeper当中。<br>metaManager 这个比较多，其实根据元数据存放的位置可以分为三大类，memory,file,zookeeper<br>  canal通过这些组件的选取可以达到不同使用场景的效果，比如单机的话，一般使用file来存储metadata就行了,HA的话一般使用zookeeper来存储metadata。</p>
+<h5 id="4-canal的工作过程"><a href="#4-canal的工作过程" class="headerlink" title="4. canal的工作过程"></a>4. canal的工作过程</h5><h6 id="4-1-启动时去MySQL-进行dump操作的binlog-位置确定"><a href="#4-1-启动时去MySQL-进行dump操作的binlog-位置确定" class="headerlink" title="4.1 启动时去MySQL 进行dump操作的binlog 位置确定"></a>4.1 启动时去MySQL 进行dump操作的binlog 位置确定</h6><p>  工作的过程。在启动一个canal instance 的时候，首先启动一个eventParser 线程来进行数据的dump 当他去master拉取binlog的时候需要binlog的位置，这个位置的确定是按照如下的顺序来确定的（这个地方讲述的是HA模式哈）。</p>
+<ol>
+<li>在启动的时候判断是否使用zookeeper，如果是zookeeper,看能否拿到 cursor (也就是binlog的信息)，如果能够拿到，把这个信息存到内存中（MemoryLogPositionManager）,然后拿这个信息去mysql中dump binlog</li>
+<li>通过1拿不到的话(一般是zookeeper当中每一，比如第一次搭建的时候，或者因为某些原因zk中的数据被删除了)，就去配置文件配置当中的去拿,把这个信息存到内存中（MemoryLogPositionManager）,然后拿这个信息去mysql中dump binlog</li>
+<li>通过2依然没有拿到的话，就去mysql 中执行一个sql show master status 这个语句会显示当前mysql binlog最后位置的信息，也就是刚写入的binlog所在的位置信息。把这个信息存到内存中（MemoryLogPositionManager）,然后拿这个信息去mysql中dump binlog。</li>
+</ol>
+<p>  后面的eventParser的操作就会以内存中（MemoryLogPositionManager）存储的binlog位置去master进行dump操作了。<br>mysql的*<em>show master status *</em>操作</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;</span><br><span class="line">mysql&gt; show master status\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">             File: mysql-bin.000028</span><br><span class="line">         Position: 635762367</span><br><span class="line">     Binlog_Do_DB:</span><br><span class="line"> Binlog_Ignore_DB:</span><br><span class="line">Executed_Gtid_Set: 18db0532-6a08-11e8-a13e-52540042a113:1-2784514,</span><br><span class="line">318556ef-4e47-11e6-81b6-52540097a9a8:1-30002,</span><br><span class="line">ac5a3780-63ad-11e8-a9ac-52540042a113:1-5,</span><br><span class="line">be44d87c-4f25-11e6-a0a8-525400de9ffd:1-156349782</span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
 
+<h6 id="4-2-数据在dump回来之后进行的归集-sink-和存储-store"><a href="#4-2-数据在dump回来之后进行的归集-sink-和存储-store" class="headerlink" title="4.2 数据在dump回来之后进行的归集(sink)和存储(store)"></a>4.2 数据在dump回来之后进行的归集(sink)和存储(store)</h6><p>sink操作是可以支撑将多个eventParser的数据进行过滤filter</p>
+<p><em>filter使用的是instance.properties中配置的filter,当然这个filter也可以由canal的client端在进行subscribe的时候进行设置。如果在client端进行了设置，那么服务端配置文件instance.properties的配置都会失效</em></p>
+<p>sink 之后将过滤后的数据存储到eventStore当中去。<br>  目前eventStore的实现只有一个<strong>MemoryEventStoreWithBuffer</strong>,也就是基于内存的<strong>ringbuffer</strong>,使用这个store有一个特点，这个ringbuffer是基于内存的，大小是有限制的(bufferSize = 16 * 1024 也就是16M)，所以，当canal的客户端消费比较慢的时候,<strong>ringbuffer</strong>中存满了就会阻塞<strong>sink</strong>操作，那么正读取mysql binlog的eventParser线程也会受阻。<br>  这种设计其实也是有道理的。 因为canal的操作是pull 模型，不是producer push的模型，所以他没必要存储太多数据，这样就可以避免了数据存储和持久化管理的一些问题。使数据管理的复杂度大大降低。</p>
+<p>  上面这些整个是canal的parser 线程的工作流程，主要对应的就是将数据从mysql搞下来，做一些基本的归集和过滤，然后存储到内存中。</p>
+<h6 id="4-3-binlog的消费者"><a href="#4-3-binlog的消费者" class="headerlink" title="4.3 binlog的消费者"></a>4.3 binlog的消费者</h6><p>  canal从mysql订阅了binlog以后主要还是想要给消费者使用。那么binlog是在什么时候被消费呢。这就是另一条主线了。就像咱们做一个toC的系统，管理系统是必须的，用户使用的app或者web又是一套，eventParser 线程就像是管理系统，往里面录入基础数据。canal的client就像是app端一样，是这些数据的消费方。<br>  binlog的主要消费者就是canal的client端。使用的协议是基于tcp的google.protobuf,当然tcp的模式是io多路复用，也就是nio。当我们的client发起请求之后，canal的server端就会从eventStore中将数据传输给客户端。根据客户端的ack机制，将binlog的元数据信息定期同步到zookeeper当中。</p>
+<p>差不多主要的操作就是这些吧。</p>
+<h5 id="5-canal的目录结构（不包含lib目录）"><a href="#5-canal的目录结构（不包含lib目录）" class="headerlink" title="5. canal的目录结构（不包含lib目录）"></a>5. canal的目录结构（不包含lib目录）</h5><p>配置父目录：<br>在下面可以看到，</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">canal</span></span><br><span class="line"><span class="string">├──</span> <span class="string">bin</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">canal.pid</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">startup.bat</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">startup.sh</span></span><br><span class="line"><span class="string">│</span>   <span class="string">└──</span> <span class="string">stop.sh</span></span><br><span class="line"><span class="string">└──</span> <span class="string">conf</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">canal.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">gamer</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">ww_social</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">wother</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">nihao</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">liveim</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">logback.xml</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">spring</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">ym</span> <span class="string">---目录</span></span><br><span class="line">    <span class="string">└──</span> <span class="string">xrm_ppp</span> <span class="string">---目录</span></span><br></pre></td></tr></table></figure>
+
+<p>这里是全部展开的目录</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">canal</span></span><br><span class="line"><span class="string">├──</span> <span class="string">bin</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">canal.pid</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">startup.bat</span></span><br><span class="line"><span class="string">│</span>   <span class="string">├──</span> <span class="string">startup.sh</span></span><br><span class="line"><span class="string">│</span>   <span class="string">└──</span> <span class="string">stop.sh</span></span><br><span class="line"><span class="string">└──</span> <span class="string">conf</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">canal.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">game_center</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">└──</span> <span class="string">instance.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">ww_social</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">h2.mv.db</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">h2.trace.db</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">└──</span> <span class="string">instance.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">wwother</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">h2.mv.db</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">└──</span> <span class="string">instance.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">nihao</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">h2.mv.db</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">h2.trace.db</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">└──</span> <span class="string">instance.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">movie</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">h2.mv.db</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">└──</span> <span class="string">instance.properties</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">logback.xml</span></span><br><span class="line">    <span class="string">├──</span> <span class="string">spring</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">default-instance.xml</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">file-instance.xml</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">group-instance.xml</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">local-instance.xml</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">├──</span> <span class="string">memory-instance.xml</span></span><br><span class="line">    <span class="string">│</span>   <span class="string">└──</span> <span class="string">tsdb</span></span><br><span class="line">    <span class="string">│</span>       <span class="string">├──</span> <span class="string">h2-tsdb.xml</span></span><br><span class="line">    <span class="string">│</span>       <span class="string">├──</span> <span class="string">mysql-tsdb.xml</span></span><br><span class="line">    <span class="string">│</span>       <span class="string">├──</span> <span class="string">sql</span></span><br><span class="line">    <span class="string">│</span>       <span class="string">└──</span> <span class="string">sql-map</span></span><br><span class="line">    <span class="string">└──</span> <span class="string">ym</span></span><br><span class="line">        <span class="string">└──</span> <span class="string">instance.properties</span></span><br></pre></td></tr></table></figure>
+
+<p>原文链接：<a href="https://blog.csdn.net/u013200380/article/details/80963569" target="_blank" rel="noopener">https://blog.csdn.net/u013200380/article/details/80963569</a></p>
+
+      	
       
     </div>
     
@@ -224,7 +318,7 @@
   <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/categories/" alt="微信分享二维码">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -236,6 +330,16 @@
 </article>
 
   
+<nav id="article-nav">
+  
+  
+    <a href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Mysql执行计划详解</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -257,7 +361,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Canal架构组件"><span class="toc-number">1.</span> <span class="toc-text">Canal架构组件</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-mysql的binlog"><span class="toc-number">1.0.0.0.1.</span> <span class="toc-text">1.mysql的binlog</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-2-mysql-的主从复制过程"><span class="toc-number">1.0.0.0.1.1.</span> <span class="toc-text">1.2 mysql 的主从复制过程</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#1-3-canal能够同步数据的原理"><span class="toc-number">1.0.0.0.1.2.</span> <span class="toc-text">1.3 canal能够同步数据的原理</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-canal-的设计"><span class="toc-number">1.0.0.0.2.</span> <span class="toc-text">3. canal 的设计</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#3-1-canal的设计理念"><span class="toc-number">1.0.0.0.2.1.</span> <span class="toc-text">3.1 canal的设计理念</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-2-canal的组件有哪些"><span class="toc-number">1.0.0.0.2.2.</span> <span class="toc-text">3.2 canal的组件有哪些</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-3-instance-包含的组件"><span class="toc-number">1.0.0.0.2.3.</span> <span class="toc-text">3.3 instance 包含的组件</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-4-各个组件目前支持的类型"><span class="toc-number">1.0.0.0.2.4.</span> <span class="toc-text">3.4 各个组件目前支持的类型</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-canal的工作过程"><span class="toc-number">1.0.0.0.3.</span> <span class="toc-text">4. canal的工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#4-1-启动时去MySQL-进行dump操作的binlog-位置确定"><span class="toc-number">1.0.0.0.3.1.</span> <span class="toc-text">4.1 启动时去MySQL 进行dump操作的binlog 位置确定</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-2-数据在dump回来之后进行的归集-sink-和存储-store"><span class="toc-number">1.0.0.0.3.2.</span> <span class="toc-text">4.2 数据在dump回来之后进行的归集(sink)和存储(store)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-3-binlog的消费者"><span class="toc-number">1.0.0.0.3.3.</span> <span class="toc-text">4.3 binlog的消费者</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-canal的目录结构（不包含lib目录）"><span class="toc-number">1.0.0.0.4.</span> <span class="toc-text">5. canal的目录结构（不包含lib目录）</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -305,7 +409,7 @@
 var yiliaConfig = {
     mathjax: true,
     isHome: false,
-    isPost: false,
+    isPost: true,
     isArchive: false,
     isTag: false,
     isCategory: false,
