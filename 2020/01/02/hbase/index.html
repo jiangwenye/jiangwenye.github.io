@@ -7,22 +7,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Dubbo服务引用源码分析 - CanJ--Grow</title>
+  <title>HBase的读写底层原理 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Dubbo服务引用源码分析duubo消费者初始化流程源码分析—">
+  <meta name="description" content="HBase的读写底层原理简单阐述以下HBase读写高性能的底层原理">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dubbo服务引用源码分析">
-<meta property="og:url" content="http://jiangwenye.github.io/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:title" content="HBase的读写底层原理">
+<meta property="og:url" content="http://jiangwenye.github.io/2020/01/02/hbase/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Dubbo服务引用源码分析duubo消费者初始化流程源码分析—">
+<meta property="og:description" content="HBase的读写底层原理简单阐述以下HBase读写高性能的底层原理">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
-<meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T10:10:25.765Z">
+<meta property="article:published_time" content="2020-01-02T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-14T09:44:59.619Z">
 <meta property="article:author" content="CanJ">
-<meta property="article:tag" content="dubbo">
-<meta property="article:tag" content="spring">
-<meta property="article:tag" content="源码">
+<meta property="article:tag" content="HBase">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Hadoop">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -164,20 +164,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Dubbo服务引用源码解析" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-hbase" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Dubbo服务引用源码分析
+      HBase的读写底层原理
     </h1>
   
 
         
-        <a href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
+        <a href="/2020/01/02/hbase/" class="archive-article-date">
+  	<time datetime="2020-01-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-02</time>
 </a>
         
       </header>
@@ -192,15 +192,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">HBase</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
         		</li>
       		
 		</ul>
@@ -212,7 +212,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
+        			<a href="/categories/HBase/" class="article-tag-list-link color1">HBase</a>
         		</li>
       		
 		</ul>
@@ -226,21 +226,17 @@
       
 
       	
-      		<h1 id="Dubbo服务引用源码分析"><a href="#Dubbo服务引用源码分析" class="headerlink" title="Dubbo服务引用源码分析"></a><strong>Dubbo服务引用源码分析</strong></h1><h4 id="duubo消费者初始化流程源码分析—"><a href="#duubo消费者初始化流程源码分析—" class="headerlink" title="duubo消费者初始化流程源码分析—"></a><em>duubo消费者初始化流程源码分析—</em></h4><a id="more"></a>
-<p><font size = 3 face="微软雅黑">spring启动的时候利用dubbo的标签解析器将</font><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104838498033041000301008.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104838498033041000301008.png" alt=""></a><br>标签解析为<font color=green size =2>(“name:”baseEsOperationService””,”class”:”com.alibaba.dubbo.config.spring.RefrenceBean”…)</font></p>
-<h5 id="RefrenceBean该class结果如下："><a href="#RefrenceBean该class结果如下：" class="headerlink" title="RefrenceBean该class结果如下："></a>RefrenceBean该class结果如下：</h5><p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104611847033041000201600.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104611847033041000201600.png" alt=""></a><br><em>继承于spring的工厂bean类<font color=red>FactoryBean</font><br>所以一般的<font color=red>@Autowried（通过类的class注入）</font>是无法引入dubbo的service的，因为他经过spring的解析后，被定义为类的type为<font color=gray>refrenceBean.class</font>,需要通过<font color=blue>@Resource(通过bean的名称引入)</font></em></p>
-<p><em>在springboot启动的时候，会在<font color=red>afterProperties()</font>方法中设置dubbo中该interface对应的配置。引入该dubboservice时，会调用<font color=blue>refrenceBean</font>的<font color=red>getObject()</font>方法，进入方法内部进入到<font color=blue>RefrenceConfig</font>的<font color=red>init()</font>方法：</font></em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104918505033041000301508.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512104918505033041000301508.png" alt=""></a><br><em>首先会对该类的一些dubbo配置做校验等等一些代码，以及后面需要构造消费者的RegistryUrl的一些参数统一放在一个map中，这里不做说明了。进入到<font color=red>createProxy()</font>方法</em></font>：<br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105053765033041000301780.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105053765033041000301780.png" alt=""></a></p>
-<p><em>进入该方法直接跳到</font></em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105125961033041000401550.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105125961033041000401550.png" alt=""></a></p>
-<p><em>第一个方法是加载注册中心url配置。</em></p>
-<p><em>第二个方法是如果注册中心或者直接配置的服务提供者数量为1，则直接引入服务<br>在这个下面的else方法</em><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105244465033041000500992.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105244465033041000500992.png" alt=""></a><br><em>主要是如果像下图这种情况</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105316160033041000501722.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105316160033041000501722.png" alt=""></a><br><em>如果该service配置了多个注册中心，则需要将每个注册中心下服务提供者列表invokers合并。下面会讲</em></p>
-<p><em>进入到refer方法，这里一般都是选择的<font color=red>registryProtocol</font></em><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105357137033041000501765.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105357137033041000501765.png" alt=""></a><br><em>进入<font color=red>doRefer()</font>方法</font></em><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105422315033041000700584.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105422315033041000700584.png" alt=""></a></p>
-<p>*<font color=red>directory.subscribe(…)</font>这个方法最终会进入<font color=blue>zookeeperRegistry</font>的<font color=blue>doSubscribe()</font>方法<em><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105549987033041000701498.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105549987033041000701498.png" alt=""></a><br>*在这个方法里就会进行消费者的注册,还有获取提供者列表，watch该接口树节点的变动，根据提供者的ip列表,构建<font color=pink>&lt;methodName,List<Invoker>&gt;</font>的map，其中的Invoker就是<font color=blue>nettyclient</font>的<font color=blue>clientChannel</font>，dubbo主要是利用这个channel来将调用接口和参数封装序列化参数发给同样用netty监听的服务提供者。</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105633599033041000701903.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105633599033041000701903.png" alt=""></a><br><em>上面的<font color=red>directory.doSubscribe()</font>方法会将<font color=pink>&lt;methodName,List<Invoker>&gt;</font>的map设为directory的对象，但在调用的时候如何选择哪个具体的invoker来执行呢？<br><font color=red>cluster.join(directory)</font>就派上用场</em></p>
-<p><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105800025033041000800220.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105800025033041000800220.png" alt=""></a><br><strong><font size=3 color=purple>Invoker invoker = cluster.join(directory):</font></strong></p>
-<p><em>一个注册中心可能有多个服务提供者，因此这里需要将多个服务提供者合并为一个<font color=blue>MockClusterWrapper（FailoverCluster）</font>（详情见另一篇）</em></p>
-<p><em>将该注册中心中的所有服务提供者invoker合并为一个（directory包含一个<font color=blue>Map&lt;String,List&lt;Invoker<T>&gt;&gt;</font>属性对应方法名下的invoker列表）,<font color=red>cluster.join</font>返回的Invoker是对调用具体invoker的封装（负载均衡，同步或者异步，还有降级等处理）</em></p>
-<p><em>最后会调用这个方法</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105834136033041000800410.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105834136033041000800410.png" alt=""></a><br><em>这里面就有相关的降级，重试和负载均衡机制！</em></p>
-<p><em>最后会使用jdk动态代理生成一个动态代理类来调用<font color=red>invoker.invoke()</font></em></p>
-<h6 id="如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-Dubbo服务引用源码解析-3q"><a href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-Dubbo服务引用源码解析-3q" class="headerlink" title="如需转载，请注明出处：https://jiangwenye.github.io/2019/11/13/Dubbo服务引用源码解析/  3q!"></a><em>如需转载，请注明出处：<a href="https://jiangwenye.github.io/2019/11/13/Dubbo服务引用源码解析/">https://jiangwenye.github.io/2019/11/13/Dubbo服务引用源码解析/</a>  3q!</em></h6>
+      		<h1 id="HBase的读写底层原理"><a href="#HBase的读写底层原理" class="headerlink" title="HBase的读写底层原理"></a><strong>HBase的读写底层原理</strong></h1><h4 id="简单阐述以下HBase读写高性能的底层原理"><a href="#简单阐述以下HBase读写高性能的底层原理" class="headerlink" title="简单阐述以下HBase读写高性能的底层原理"></a><em>简单阐述以下HBase读写高性能的底层原理</em></h4><a id="more"></a>
+
+<p><strong>HBase</strong>会将实时数据保存到内存（<strong>MemStore</strong>–<strong>Region</strong>维度的）中，在内存中的数据是有序的，如果内存空间满了，会刷写到<strong>HFile</strong>中，而在<strong>HFile</strong>中保存的内容也是有序的。当数据写入<strong>HFile</strong>后，内存中的数据会被丢弃。<br><strong>hbase</strong>的数据存储方式和<strong>elasticsearch</strong>非常相似：除非hbase系统发起的<strong>合并</strong>文件命令，HFile一旦创建，不能修改，其原理基于<strong>hadoop</strong>的<strong>hdfs</strong>，这里不阐述了，如果是<strong>update</strong>命令就会拆解为<strong>delete+insert</strong>命令，在<strong>memstore</strong>中新增一条新数据，标记原始数据的删除标志。<br>随着数据的增多HFile页文件也会多，其中会包括一些<strong>update</strong>造成的冗余数据。当到达一定条件,后台线程会合并小文件组成大文件，这样磁盘查找会限制在少数几个数据存储文件中。HBase的写入速度快是因为它其实并不是真的立即写入文件中，而是先写入内存，随后<strong>异步</strong>刷入HFile（其实现在的数据存储中间件都是利用的这种方式，比如<strong>mysql</strong>数据库的<strong>redoLog+bufferPool</strong>,<strong>es</strong>的内核缓冲区缓冲<strong>segmentFile</strong>和<strong>transLog</strong>,像<strong>kafka</strong>，<strong>rocketmq</strong>也是利用这种方式）。所以在客户端看来，写入速度很快。另外，写入时候将随机写入转换成顺序写，数据写入速度也很稳定。<br>而读取速度快是因为它使用了<strong>LSM树型结构</strong>，而不是B或B+树。磁盘的顺序读取速度很快，但是相比而言，寻找磁道的速度就要慢很多。HBase的存储结构导致它需要磁盘寻道时间在可预测范围内，并且读取与所要查询的rowkey连续的任意数量的记录都不会引发额外的寻道开销。比如有5个存储文件，那么最多需要5次磁盘寻道就可以。而关系型数据库，即使有索引，也无法确定磁盘寻道次数。而且，HBase读取首先会在缓存（<strong>BlockCache</strong>）中查找，它采用了<strong>LRU</strong>（最近最少使用算法），如果缓存中没找到，会从内存中的<strong>MemStore</strong>中查找，只有这两个地方都找不到时，才会加载HFile中的内容，而上文也提到了读取HFile速度也会很快，因为节省了寻道开销。<br>举例：<br><strong>A：如果快速查询（从磁盘读数据），hbase是根据rowkey查询的，只要能快速的定位rowkey,  就能实现快速的查询，主要是以下因素：</strong><br>     1、hbase是可划分成多个region，你可以简单的理解为关系型数据库的多个分区。<br>      2、键是排好序了的<br>      3、按列存储的</p>
+<h6 id="B：实时查询"><a href="#B：实时查询" class="headerlink" title="B：实时查询"></a>B：实时查询</h6><p>HBase的机制是数据先写入到内存中，当数据量达到一定的量（如128M），再写入磁盘中， 在内存中，是不进行数据的更新或合并操作的，只增加数据，这使得用户的写操作只要进入内存中就可以立即返回，保证了HBase I/O的高性能，用户刚新增的数据可以马上查到，联系hbase的数据存储原理，新增的数据在内存中，还未被刷进磁盘，自然能快速找到。</p>
+<h5 id="hbase的读写过程"><a href="#hbase的读写过程" class="headerlink" title="hbase的读写过程"></a>hbase的读写过程</h5><h6 id="（1）读流程："><a href="#（1）读流程：" class="headerlink" title="（1）读流程："></a>（1）读流程：</h6><p>   - 客户端通过<strong>zookeeper</strong>以及-root-表和.mate.表找到目标数据所在的<strong>regionserver</strong>（寻址）<br>   - 联系<strong>regionserver</strong>查询目标数据<br>   - <strong>Region</strong>先在<strong>memstore</strong>中查找，命中则返回 </p>
+<ul>
+<li>如果<strong>memstore</strong>找不到，则在<strong>storefile</strong>中扫描 ， 为了能快速的判断要查询的数据在不在这个 <strong>StoreFile</strong> 中，应用了 <strong>BloomFilter</strong>（布隆过滤）,如果<strong>不存在</strong>则开始下个<strong>storeFile</strong>的搜索，如果布隆过滤结果<strong>存在</strong>（<font color='red'>布隆过滤是有概率错误的</font>），则使用<strong>二分法</strong>寻找所需列簇。<h6 id="（2）写流程："><a href="#（2）写流程：" class="headerlink" title="（2）写流程："></a>（2）写流程：</h6>   - Client先根据<strong>rowkey</strong>找到对应的<strong>region</strong>所在的<strong>regionserver</strong>(寻址)<br>   - Client向regionserver提交请求<br>   - <strong>Regionserver</strong>找到目标<strong>region</strong><br>   - <strong>Regionserver</strong>检查数据是否与 <strong>Schema</strong> 一致<br>   - 如果客户端没有指定版本，则获取当前系统时间作为数据版本<br>   - 将更新写入<strong>Hlog **<br>   - 将数据写入</strong>memstore**<br>   - 判断<strong>memstore</strong>的是否需要flush为<strong>storefile</strong></li>
+</ul>
+<h5 id="LSM优化方式："><a href="#LSM优化方式：" class="headerlink" title="LSM优化方式："></a>LSM优化方式：</h5><p><strong>Bloom filter</strong>: 就是个带随机概率的<strong>bitmap</strong>,可以快速的告诉你，某一个小的有序结构里有没有指定的那个数据的。于是就可以不用二分查找，而只需简单的计算几次就能知道数据是否在某个小集合里啦。效率得到了提升，但付出的是空间代价。<br>compact:小树合并为大树:因为小树性能有问题，所以要有个进程不断地将小树合并到大树上，这样大部分的老数据查询也可以直接使用log2N的方式找到，不需要再进行(N/m)*log2n的查询了</p>
+<h5 id="总结：总结："><a href="#总结：总结：" class="headerlink" title="总结：总结："></a>总结：总结：</h5><p>用到HBase基本都是insert操作，像日志这种基本不会去改，所以在内存中直接新增当内存达到一定数量的时候，刷入磁盘，这边应该是直接创建一个storeFile，有点类似elasticsearch的segementfile,这个storefile是根据rowkey排过序的。当读取的时候，如果要查找的是范围内的，那就要遍历所有的storefile了，但是这里有用到二分查询和布隆过滤，效率还是可以的，后期当storefile数量到达阈值时合并成多个大的storefile可以减少磁盘寻道，都在一个文件里了。（如果确实有delete和update操作，应该也是类似es,将对应rowkey的之前的数据标记为删除，读取的时候全部取出根据是否删除过滤）<br>HBase使用blockStore来将读取的数据缓存在内存中（类似mysql的buffer pool），以便后续查找同样或者相邻的数据，blockStore是regionServer级别的。<br>还有Hbase的实时查询，说的是刚插入的数据能马上查到，因为刚插入的数据在内存种，一般都能直接查到，并不是说对很早以前的数据也能实现实时查询。</p>
+<h6 id="如需转载，请注明出处：https-jiangwenye-github-io-2019-11-10-hbase-3q"><a href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-10-hbase-3q" class="headerlink" title="如需转载，请注明出处：https://jiangwenye.github.io/2019/11/10/hbase/  3q!"></a><em>如需转载，请注明出处：<a href="https://jiangwenye.github.io/2019/11/10/hbase/">https://jiangwenye.github.io/2019/11/10/hbase/</a>  3q!</em></h6>
       	
       
     </div>
@@ -267,7 +263,7 @@
   <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" alt="微信分享二维码">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/01/02/hbase/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -281,18 +277,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/11/14/dubbo-netty/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Dubbo通讯机制源码解析
+          Mysql执行计划详解
         
       </div>
     </a>
   
   
-    <a href="/2019/11/13/dubbo-export/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Dubbo服务暴露源码分析</div>
+    <a href="/2020/01/02/canal-client%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Canal-Client如何工作</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -319,7 +315,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo服务引用源码分析"><span class="toc-number">1.</span> <span class="toc-text">Dubbo服务引用源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#duubo消费者初始化流程源码分析—"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">duubo消费者初始化流程源码分析—</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RefrenceBean该class结果如下："><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">RefrenceBean该class结果如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-Dubbo服务引用源码解析-3q"><span class="toc-number">1.0.0.1.1.1.</span> <span class="toc-text">如需转载，请注明出处：https:&#x2F;&#x2F;jiangwenye.github.io&#x2F;2019&#x2F;11&#x2F;13&#x2F;Dubbo服务引用源码解析&#x2F;  3q!</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HBase的读写底层原理"><span class="toc-number">1.</span> <span class="toc-text">HBase的读写底层原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#简单阐述以下HBase读写高性能的底层原理"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">简单阐述以下HBase读写高性能的底层原理</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#B：实时查询"><span class="toc-number">1.0.0.1.0.1.</span> <span class="toc-text">B：实时查询</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hbase的读写过程"><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">hbase的读写过程</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#（1）读流程："><span class="toc-number">1.0.0.1.1.1.</span> <span class="toc-text">（1）读流程：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#（2）写流程："><span class="toc-number">1.0.0.1.1.2.</span> <span class="toc-text">（2）写流程：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#LSM优化方式："><span class="toc-number">1.0.0.1.2.</span> <span class="toc-text">LSM优化方式：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#总结：总结："><span class="toc-number">1.0.0.1.3.</span> <span class="toc-text">总结：总结：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-10-hbase-3q"><span class="toc-number">1.0.0.1.3.1.</span> <span class="toc-text">如需转载，请注明出处：https:&#x2F;&#x2F;jiangwenye.github.io&#x2F;2019&#x2F;11&#x2F;10&#x2F;hbase&#x2F;  3q!</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
