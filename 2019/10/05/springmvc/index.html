@@ -7,15 +7,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Tag: dubbo - CanJ--Grow</title>
+  <title>SpringMvc请求调用源码分析 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="CanJ--Grow">
-<meta property="og:url" content="http://jiangwenye.github.io/tags/dubbo/index.html">
+  <meta name="description" content="SpringMvc请求调用源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMvc请求调用源码分析">
+<meta property="og:url" content="http://jiangwenye.github.io/2019/10/05/springmvc/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
+<meta property="og:description" content="SpringMvc请求调用源码分析">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2019-10-05T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-14T07:18:52.466Z">
 <meta property="article:author" content="CanJ">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="源码">
+<meta property="article:tag" content="springMvc">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -157,193 +164,194 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-springmvc" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      SpringMvc请求调用源码分析
+    </h1>
   
+
+        
+        <a href="/2019/10/05/springmvc/" class="archive-article-date">
+  	<time datetime="2019-10-05T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-05</time>
+</a>
+        
+      </header>
     
     
+      <div class="article-section">
+        <div class="tag-category">
+          
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">springMvc</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/springMvc/" class="article-tag-list-link color5">springMvc</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+        </div>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
       
+
+      	
+      		<h1 id="SpringMvc请求调用源码分析"><a href="#SpringMvc请求调用源码分析" class="headerlink" title="SpringMvc请求调用源码分析"></a><strong>SpringMvc请求调用源码分析</strong></h1><a id="more"></a>
+
+<p><strong>DispatcherServlet</strong>继承关系如下：</p>
+<h6 id="DispatcherServlet→FrameworkServlet→HttpServletBean→HttpServlet"><a href="#DispatcherServlet→FrameworkServlet→HttpServletBean→HttpServlet" class="headerlink" title="DispatcherServlet→FrameworkServlet→HttpServletBean→HttpServlet"></a><em>DispatcherServlet→FrameworkServlet→HttpServletBean→HttpServlet</em></h6><p>一个请求过来，先是会进入<strong>HttpServlet</strong>的<strong>Service</strong>（）方法:<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211223eac525f6?w=1149&h=716&f=png&s=96144" alt=""><br>此处就以<strong>doGet</strong>方法进行分析：<br><strong>FrameworkServlet</strong>重写了<strong>doGet</strong>方法，所以最终会调用该类的<strong>doGet</strong>方法<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211235ea8200fb?w=1243&h=737&f=png&s=73265" alt=""><br>主要看这个<strong>processRequest</strong>（）方法：<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211247a421ab9d?w=1698&h=733&f=png&s=114090" alt=""><br>注：<font color='red'>后面深入发现，上面的操作将<strong>session</strong>塞入当前请求线程是错误的，之前以为是在这边塞入的，看了<strong>tomcat</strong>源码，其实是<strong>tomcat</strong>会在请求过来的时候根据<strong>cookie</strong>中的<strong>jsessionid</strong>自动将关联的session绑定到<strong>HttpServletRequest</strong>中，而不是在这里，这边就是构造一个<strong>上下文线程安全实例</strong>绑定一下</font>。<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721126749c152d1?w=1679&h=715&f=png&s=77252" alt=""><br>上述分析主要是初始化<strong>request</strong>请求的一些上下文信息，比如像<strong>session</strong>这种就是在这个地方塞入<strong>request</strong>的。</p>
+<p>初始完上下文<strong>request</strong>后，会调用<strong>doService()</strong>方法：<br><strong>DispatcherServlet</strong>重写了该方法：<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721129a82089638?w=1339&h=746&f=png&s=113147" alt=""></p>
+<p>进入<strong>doDispatch()</strong>方法详解：<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172112a6122f62b8?w=1111&h=664&f=png&s=85478" alt=""><br>进入<strong>getHandler()</strong>方法：<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172112b230d461fe?w=1466&h=456&f=png&s=67695" alt=""><br>可以看到<strong>springboot</strong>启动时装载的全部<strong>handlerMapping</strong>都保存在<strong>List&lt;HandlerMapping&gt;</strong> <strong>handlerMappings</strong>中。这里遍历<strong>handlerMappings</strong>中所有<strong>handlerMapping</strong>，直到找到请求对应的<strong>Mapping</strong>并返回执行立链<strong>HandlerExecutionChain</strong>。因为是<strong>@RequestMapping</strong>映射，所以遍<strong>历到handlerMappings[1]==RequestMappingHandlerMapping</strong>可以找到对应执行链。<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172112cf178c7bcb?w=905&h=293&f=png&s=83750" alt=""><br>下边直接步进到<strong>RequestMappingHandlerMapping</strong>其继承自<strong>AbstractHandlerMapping</strong>。<br><strong>RequestMappingHandlerMapping</strong>初始化时注册<strong>@RequestMapping</strong>映射<br><strong>RequestMappingHandlerMapping</strong>成员变量<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172112e701b9b17e?w=1147&h=786&f=png&s=244957" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/14/172112eedf679f29" alt=""></p>
+<p><strong>getHandler()</strong>方法：<br><strong>HandlerExecutionChain</strong>对象是封装了请求匹配的拦截器调用（如果匹配到的话）和具体的<strong>handlerMethod</strong>对象调用。<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211309adfee1cf?w=1499&h=889&f=png&s=271154" alt=""><br>进入<strong>getHandlerInternal</strong>方法（<strong>AbstractHandlerMethodMapping</strong>类）：<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211312bfd5a2ce?w=971&h=242&f=png&s=33922" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721131d64424dbc?w=1495&h=726&f=png&s=104959" alt=""></p>
+<p>进入lookupHandlerMethod()方法<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721132590b23ad9?w=1133&h=527&f=png&s=145651" alt=""><br>这里会根据请求的必填参数，请求的头部参数等等信息匹配相关的<strong>handlerMethod</strong>,就是根据<strong>url参数信息</strong>校验是否有对应的<strong>handlerMethod</strong>。</p>
+<p>接下来看<strong>getHandlerExecutionChain()</strong>方法<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211332171647f2?w=1374&h=608&f=png&s=83276" alt=""><br><font color='red'><strong>*springmvc拦截器</strong>不同于aop因为存在统一入口<strong>dispatchservlet</strong>所以不需要动态代理*</font>.</p>
+<p>SpringMVC的<strong>拦截器</strong>不同于Spring的<strong>拦截器</strong>，SpringMVC具有统一的入口<strong>DispatcherServlet</strong>，所有的请求都通过<strong>DispatcherServlet</strong>，所以只需要在<strong>DispatcherServlet</strong>上做文章即可，<strong>DispatcherServlet</strong>也没有代理，同时SpringMVC管理的Controller也不有代理。哪不难想到我们在执行controller之前做某些动作，执行完毕做某些动作，render完成做某些动作。SpringMVC的拦截器对应提供了三个<strong>preHandle，postHandle，afterCompletion</strong>方法。只需在三个方法内写我们需要的逻辑就行，多了都是废话，还是代码实在。 </p>
+<p>获取<strong>handlerExecutionChain</strong>不过多叙述了。<br>接下来看看<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172113551e5a5414?w=1426&h=703&f=png&s=87508" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211362f84ba0a7?w=1432&h=476&f=png&s=61838" alt=""><br>根据<strong>handlerMapping</strong>类型获取对应的<strong>handlerAdapter</strong></p>
+<p>介绍一下几种适配器对应的处理器以及这些处理器的作用:<br>        1. AnnotationMethodHandlerAdapter主要是适配注解类处理器，注解类处理器就是我们经常使用的@Controller的这类处理器<br>        2. HttpRequestHandlerAdapter主要是适配静态资源处理器，静态资源处理器就是实现了HttpRequestHandler接口的处理器，这类处理器的作用是处理通过SpringMVC来访问的静态资源的请求。<br>        3.SimpleControllerHandlerAdapter是Controller处理适配器，适配实现了Controller接口或Controller接口子类的处理器，比如我们经常自己写的Controller来继承MultiActionController.<br>        4.SimpleServletHandlerAdapter是Servlet处理适配器,适配实现了Servlet接口或Servlet的子类的处理器，我们不仅可以在web.xml里面配置Servlet，其实也可以用SpringMVC来配置Servlet，不过这个适配器很少用到，而且SpringMVC默认的适配器没有他，默认的是前面的三种。</p>
+<p>接下来看具体的方法调用过程<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721136fb974f512?w=1784&h=645&f=png&s=74203" alt=""><br><strong>AnnotationMethodHandlerAdapter</strong>(<font color='red'>spring2.5之前用的是这个，这里就看看是干嘛用的</font>)：<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/17211383c8fb10a7?w=1402&h=846&f=png&s=122938" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721147077f84008?w=1797&h=447&f=png&s=64868" alt=""></p>
+<p><strong>RequestMappingHandlerAdapter</strong>(<font color='red'>正常调用就是用的这个适配器,父类是<strong>AbstractHandlerMethodAdapter</strong></font>)<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172120465afa3abb?w=1360&h=668&f=png&s=96585" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721204f6e0437b0?w=1586&h=849&f=png&s=110023" alt=""><br>关注一下下面的这个<strong>synchronizeOnSession</strong>这个锁，回对应<strong>web.xml</strong>里这个配置：<img src="https://user-gold-cdn.xitu.io/2020/5/14/17211468d3f7d7cf?w=484&h=90&f=png&s=2821" alt=""><br>重头戏:<strong>invokeHandlerMethod</strong>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> ModelAndView <span class="title">invokeHandlerMethod</span><span class="params">(HttpServletRequest request,</span></span></span><br><span class="line"><span class="function"><span class="params">      HttpServletResponse response, HandlerMethod handlerMethod)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">   ServletWebRequest webRequest = <span class="keyword">new</span> ServletWebRequest(request, response);</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line"><span class="comment">// 获取WebDataBinderFactory，绑定request 和 参数（Java）之间，</span></span><br><span class="line">   	 <span class="comment">// 也就是一段url?date=20181011=&gt;date = Sun Aug 19 00:00:00 CST 2018</span></span><br><span class="line">   	 <span class="comment">// 这种1:1的关系的时候，spring封装了一个对象，叫做WebDataBinder</span></span><br><span class="line">   		    </span><br><span class="line">   	 <span class="comment">// 这里面做了两个事：</span></span><br><span class="line">   	 <span class="comment">// 1. 查询当前方法匹配的所有InitBinder方法，并且每个InitBinder注解对应的方法会被创建为InvocableHandlerMethod，并在hello方法之前调用</span></span><br><span class="line">   	 <span class="comment">// 2. 创建一个 ServletRequestDataBinderFactory</span></span><br><span class="line">      WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);</span><br><span class="line">      ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);</span><br><span class="line"><span class="comment">// 创建一个Servlet的HandlerMethod</span></span><br><span class="line">      ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);</span><br><span class="line">      invocableMethod.setHandlerMethodArgumentResolvers(<span class="keyword">this</span>.argumentResolvers);</span><br><span class="line">      invocableMethod.setHandlerMethodReturnValueHandlers(<span class="keyword">this</span>.returnValueHandlers);</span><br><span class="line">      invocableMethod.setDataBinderFactory(binderFactory);</span><br><span class="line">      invocableMethod.setParameterNameDiscoverer(<span class="keyword">this</span>.parameterNameDiscoverer);</span><br><span class="line"></span><br><span class="line">      ModelAndViewContainer mavContainer = <span class="keyword">new</span> ModelAndViewContainer();</span><br><span class="line"><span class="comment">// 在重定向之前从请求返回只读“输入”闪存属性</span></span><br><span class="line">      mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));</span><br><span class="line">     <span class="comment">// 按照以下的顺序填充model</span></span><br><span class="line">     <span class="comment">// a. 检索@SessionAttributes上已经可以使用的会话属性。</span></span><br><span class="line">     <span class="comment">// b. 执行 @ModelAttribute 注释的方法 </span></span><br><span class="line">    <span class="comment">// c. 查找同样列为@SessionAttributes的@ModelAttribute方法参数，并确保它们出现在模型中，如果需要则引发异常</span></span><br><span class="line">      modelFactory.initModel(webRequest, mavContainer, invocableMethod);</span><br><span class="line"><span class="comment">// 是否在重定向的时候忽略默认的Model ；；；默认 false</span></span><br><span class="line">      mavContainer.setIgnoreDefaultModelOnRedirect(<span class="keyword">this</span>.ignoreDefaultModelOnRedirect);</span><br><span class="line"><span class="comment">// 创建一步的web请求</span></span><br><span class="line">      AsyncWebRequest asyncWebRequest = WebAsyncUtils.createAsyncWebRequest(request, response);</span><br><span class="line">      asyncWebRequest.setTimeout(<span class="keyword">this</span>.asyncRequestTimeout);</span><br><span class="line"><span class="comment">// web请求管理器</span></span><br><span class="line">      WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);</span><br><span class="line">      asyncManager.setTaskExecutor(<span class="keyword">this</span>.taskExecutor);</span><br><span class="line">      asyncManager.setAsyncWebRequest(asyncWebRequest);</span><br><span class="line">      asyncManager.registerCallableInterceptors(<span class="keyword">this</span>.callableInterceptors);</span><br><span class="line">      asyncManager.registerDeferredResultInterceptors(<span class="keyword">this</span>.deferredResultInterceptors);</span><br><span class="line"><span class="comment">// 如果有并发结果</span></span><br><span class="line">      <span class="keyword">if</span> (asyncManager.hasConcurrentResult()) &#123;</span><br><span class="line">         Object result = asyncManager.getConcurrentResult();</span><br><span class="line">         mavContainer = (ModelAndViewContainer) asyncManager.getConcurrentResultContext()[<span class="number">0</span>];</span><br><span class="line">         asyncManager.clearConcurrentResult();</span><br><span class="line">         <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">            logger.debug(<span class="string">"Found concurrent result value ["</span> + result + <span class="string">"]"</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         invocableMethod = invocableMethod.wrapConcurrentResult(result);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">// 执行方法,真正的开始执行，之前都是在为这个做准备</span></span><br><span class="line">   	<span class="comment">// 分为三步0.处理入参 1. 处理逻辑执行  2. 对返回值进行处理</span></span><br><span class="line">      invocableMethod.invokeAndHandle(webRequest, mavContainer);</span><br><span class="line">      <span class="keyword">if</span> (asyncManager.isConcurrentHandlingStarted()) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> getModelAndView(mavContainer, modelFactory, webRequest);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">finally</span> &#123;</span><br><span class="line">      webRequest.requestCompleted();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>ServletInvocableHandlerMethod</strong>.<strong>invokeAndHandle</strong>()<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/1721206c449ecba0?w=1520&h=831&f=png&s=121384" alt=""><br><strong>InvocableHandlerMethod</strong>.<strong>invokeForRequest</strong>()<br><img src="https://user-gold-cdn.xitu.io/2020/5/14/172120763bb63db2?w=1390&h=508&f=png&s=76464" alt=""></p>
+<h5 id="最后放一张springmvc请求流程图："><a href="#最后放一张springmvc请求流程图：" class="headerlink" title="最后放一张springmvc请求流程图："></a>最后放一张springmvc请求流程图：</h5><p><img src="https://user-gold-cdn.xitu.io/2020/5/14/172120821df00356?w=858&h=652&f=png&s=126504" alt=""><br><em>1、  用户发送请求至前端控制器DispatcherServlet。<br>2、  DispatcherServlet收到请求调用HandlerMapping处理器映射器。<br>3、  处理器映射器找到具体的处理器(可以根据xml配置、注解进行查找)，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。<br>4、  DispatcherServlet调用HandlerAdapter处理器适配器。<br>5、  HandlerAdapter经过适配调用具体的处理器(Controller，也叫后端控制器)。<br>6、  Controller执行完成返回ModelAndView。<br>7、  HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet。<br>8、  DispatcherServlet将ModelAndView传给ViewReslover视图解析器。<br>9、  ViewReslover解析后返回具体View。<br>10、DispatcherServlet根据View进行渲染视图（即将模型数据填充至视图中）。<br>11、 DispatcherServlet响应用户。</em></p>
+<h6 id="如需转载，请注明出处：https-jiangwenye-github-io-2019-10-05-springmvc-3q"><a href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-10-05-springmvc-3q" class="headerlink" title="如需转载，请注明出处：https://jiangwenye.github.io/2019/10/05/springmvc/  3q!"></a><em>如需转载，请注明出处：<a href="https://jiangwenye.github.io/2019/10/05/springmvc/">https://jiangwenye.github.io/2019/10/05/springmvc/</a>  3q!</em></h6>
+      	
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
+    </div>
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/14/dubbo-netty/" class="archive-article-date">
-  	<time datetime="2019-11-14T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/14/dubbo-netty/">Dubbo通讯机制源码解析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
+    
+       <div class="article-info article-info-index">
           
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<div class="share-icons">
+    <a class="weibo share-sns" data-type="weibo">
+      <i class="icon icon-weibo"></i>
+    </a>
+    <a class="weixin share-sns wxFab" data-type="weixin">
+      <i class="icon icon-weixin"></i>
+    </a>
+    <a class="qzone share-sns" data-type="qzone">
+      <i class="icon icon-qzone"></i>
+    </a>
+    <a class="google share-sns" data-type="google">
+      <i class="icon icon-google"></i>
+    </a>
+</div>
 
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2019/10/05/springmvc/" alt="微信分享二维码">
+  </div>
+</div>
 
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+<div class="mask js-mask"></div>
+       </div>
+    
+    <div class="clearfix"></div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2019/11/13/dubbo-export/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Dubbo服务暴露源码分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/02/springmvc-request/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">SpringMvc源码启动分析</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/13/Dubbo%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">Dubbo服务引用源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SpringMvc请求调用源码分析"><span class="toc-number">1.</span> <span class="toc-text">SpringMvc请求调用源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#DispatcherServlet→FrameworkServlet→HttpServletBean→HttpServlet"><span class="toc-number">1.0.0.0.0.1.</span> <span class="toc-text">DispatcherServlet→FrameworkServlet→HttpServletBean→HttpServlet</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#最后放一张springmvc请求流程图："><span class="toc-number">1.0.0.0.1.</span> <span class="toc-text">最后放一张springmvc请求流程图：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-10-05-springmvc-3q"><span class="toc-number">1.0.0.0.1.1.</span> <span class="toc-text">如需转载，请注明出处：https:&#x2F;&#x2F;jiangwenye.github.io&#x2F;2019&#x2F;10&#x2F;05&#x2F;springmvc&#x2F;  3q!</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/13/dubbo-export/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/13/dubbo-export/">Dubbo服务暴露源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s)
+  })();
+</script>
 
 
           </div>
@@ -367,9 +375,9 @@
 var yiliaConfig = {
     mathjax: true,
     isHome: false,
-    isPost: false,
+    isPost: true,
     isArchive: false,
-    isTag: true,
+    isTag: false,
     isCategory: false,
     open_in_new: false,
     toc_hide_index: false,
