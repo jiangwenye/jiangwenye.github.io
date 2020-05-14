@@ -159,6 +159,127 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-canal一些开发问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/">Canal一些开发问题</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/" class="archive-article-date">
+  	<time datetime="2020-03-15T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
+</a>
+        
+      </header>
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+      	
+      		<h1 id="Canal一些开发问题"><a href="#Canal一些开发问题" class="headerlink" title="Canal一些开发问题"></a><strong>Canal一些开发问题</strong></h1><h4 id="开发canal过程中需要注意的一些问题：数据问题和性能问题"><a href="#开发canal过程中需要注意的一些问题：数据问题和性能问题" class="headerlink" title="开发canal过程中需要注意的一些问题：数据问题和性能问题"></a><em>开发canal过程中需要注意的一些问题：数据问题和性能问题</em></h4><p>!–more–&gt;</p>
+<h5 id="Canal会导致消息重复吗？"><a href="#Canal会导致消息重复吗？" class="headerlink" title="Canal会导致消息重复吗？"></a>Canal会导致消息重复吗？</h5><pre><code>答：会，这从两个大的方面谈起。
+    1）Canal instance初始化时，根据“消费者的Cursor”来确定binlog的起始位置，但是Cursor在ZK中的保存是滞后的（间歇性刷新），所以Canal instance获得的起始position一定不会大于消费者真实已见的position,这种情况主要出现在主从切换的时候
+    2）Consumer端，因为某种原因的rollback，也可能导致一个batch内的所有消息重发，此时可能导致重复消费。
+我们建议，Consumer端需要保持幂等，对于重复数据可以进行校验或者replace。对于非幂等操作，比如累加、计费，需要慎重</code></pre><h5 id="Canal会不会丢失数据？"><a href="#Canal会不会丢失数据？" class="headerlink" title="Canal会不会丢失数据？"></a>Canal会不会丢失数据？</h5><pre><code>答：Canal正常情况下不会丢失数据，比如集群节点失效、重启、Consumer关闭等；但是，存在丢数据的风险可能存在如下几种可能：
+    1）ZK的数据可靠性或者安全性被破坏，比如ZK数据丢失，ZK的数据被人为串改，特别是有关Position的值。
+    2）MySQL binlog非正常运维，比如binglog迁移、重命名、丢失等。
+    3）切换MySQL源，比如原来基于M1实例，后来M1因为某种原因失效，那么Canal将数据源切换为M2，而且M1和M2可能binlog数据存在不一致（非常有可能）。
+    4）Consumer端ACK的时机不佳，比如调用get()方法，而不是getWithoutAck()，那么消息有可能尚未完全消费，就已经ACK，那么此时由异常或者Consumer实例失效，则可能导致消息丢失。我们需要在ACK时机上保障“at lease once”。</code></pre><h5 id="Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？"><a href="#Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？" class="headerlink" title="Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？"></a>Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？</h5><pre><code>答：根据数据流的pipeline，“Master” &gt; &quot;Slave&quot; &gt; &quot;Canal&quot; &gt; &quot;Consumer&quot;，每个环节都需要耗时，而且整个管道中都是单线程、串行、阻塞式。（假如网络层面都是良好的）
+    1）如果批量insert、update、delete，都可能导致大量的binlog产生，也会加剧Master与slave之间数据同步的延迟。（写入频繁）
+    2）“Consumer”消费的效能较低，比如每条event执行耗时很长。这会导致数据变更的消息ACK较慢，那么对于Canal而言也将阻塞，直到Canal内部的store有足够的空间存储新消息、才会继续与Slave进行数据同步。
+    3）如果Canal节点ZK的网络联通性不畅，将会导致Canal集群处于动荡状态，大量的时间消耗在ZK状态监测和维护上，而无法对外提供正常服务，包括不能顺畅的dump数据库数据。</code></pre><h5 id="Canal如何重置消费的position？"><a href="#Canal如何重置消费的position？" class="headerlink" title="Canal如何重置消费的position？"></a>Canal如何重置消费的position？</h5><pre><code>答：比如当消费者在消费binlog时，数据异常，需要回溯到旧的position重新消费，是这个场景！
+1）我们首先确保，你需要回溯的position所对应的binlog文件仍然存在，可以通过需要回溯的时间点来确定position和binlog文件名，这一点可以通过DBA来确认。
+2）关闭消费者，否则重置位点操作无法生效。（你可以在关闭消费者之前执行unsubscribe，来删除ZK中历史位点的信息）
+3）关闭Canal集群，修改对应的destination下的配置文件中的“canal.instance.master.journal.name = &lt;此position对应的binlog名称&gt;”、“canal.instance.master.position = &lt;此position&gt;”；可以只需要修改一台。
+4）删除zk中此destination的消费者meta信息，“${destination}/1001&quot;此path下所有的子节点，以及“1001”节点。（可以通过消费者执行unsubscribe来实现）
+5）重启2）中的此canal节点，观察日志。
+6）重启消费者。</code></pre>
+      	
+      
+    </div>
+    
+        <div class="article-info article-info-index">
+          <div class="tag-category">
+          
+            <div class="tag-box">
+              
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">canal</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据同步</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+              
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/canal/" class="article-tag-list-link color1">canal</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+            </div>
+          
+            <p class="article-more-link">
+              <a class="article-more-a" href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/">全文 >></a>
+            </p>
+          
+          </div>
+        </div>
+    
+    
+    <div class="clearfix"></div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+  
     <article id="post-canal架构组件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
