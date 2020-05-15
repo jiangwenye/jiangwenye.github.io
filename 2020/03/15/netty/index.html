@@ -7,18 +7,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Canal一些开发问题 - CanJ--Grow</title>
+  <title>Netty底层通讯原理（NIO） - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Canal一些开发问题开发canal过程中需要注意的一些问题：数据问题和性能问题">
+  <meta name="description" content="Netty底层通讯原理（NIO）Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll–more–&gt;Netty-server端初始化的时候会构造两个线程池(bossEventLoopGroup,workEventLoopGroup)，基于reactor线程池，原理如下：bossEventLoopGroup根据参数指定启用多">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Canal一些开发问题">
-<meta property="og:url" content="http://jiangwenye.github.io/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:title" content="Netty底层通讯原理（NIO）">
+<meta property="og:url" content="http://jiangwenye.github.io/2020/03/15/netty/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Canal一些开发问题开发canal过程中需要注意的一些问题：数据问题和性能问题">
+<meta property="og:description" content="Netty底层通讯原理（NIO）Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll–more–&gt;Netty-server端初始化的时候会构造两个线程池(bossEventLoopGroup,workEventLoopGroup)，基于reactor线程池，原理如下：bossEventLoopGroup根据参数指定启用多">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2020-03-15T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-14T08:35:14.494Z">
+<meta property="article:modified_time" content="2020-05-15T03:11:12.181Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="mysql">
 <meta property="article:tag" content="中间件">
@@ -165,19 +165,19 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-canal一些开发问题" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-netty" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Canal一些开发问题
+      Netty底层通讯原理（NIO）
     </h1>
   
 
         
-        <a href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/" class="archive-article-date">
+        <a href="/2020/03/15/netty/" class="archive-article-date">
   	<time datetime="2020-03-15T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
 </a>
         
@@ -231,24 +231,40 @@
       
 
       	
-      		<h1 id="Canal一些开发问题"><a href="#Canal一些开发问题" class="headerlink" title="Canal一些开发问题"></a><strong>Canal一些开发问题</strong></h1><h4 id="开发canal过程中需要注意的一些问题：数据问题和性能问题"><a href="#开发canal过程中需要注意的一些问题：数据问题和性能问题" class="headerlink" title="开发canal过程中需要注意的一些问题：数据问题和性能问题"></a><em>开发canal过程中需要注意的一些问题：数据问题和性能问题</em></h4><a id="more"></a>
-<h5 id="Canal会导致消息重复吗？"><a href="#Canal会导致消息重复吗？" class="headerlink" title="Canal会导致消息重复吗？"></a>Canal会导致消息重复吗？</h5><pre><code>答：会，这从两个大的方面谈起。
-    1）Canal instance初始化时，根据“消费者的Cursor”来确定binlog的起始位置，但是Cursor在ZK中的保存是滞后的（间歇性刷新），所以Canal instance获得的起始position一定不会大于消费者真实已见的position,这种情况主要出现在主从切换的时候
-    2）Consumer端，因为某种原因的rollback，也可能导致一个batch内的所有消息重发，此时可能导致重复消费。
-我们建议，Consumer端需要保持幂等，对于重复数据可以进行校验或者replace。对于非幂等操作，比如累加、计费，需要慎重</code></pre><h5 id="Canal会不会丢失数据？"><a href="#Canal会不会丢失数据？" class="headerlink" title="Canal会不会丢失数据？"></a>Canal会不会丢失数据？</h5><pre><code>答：Canal正常情况下不会丢失数据，比如集群节点失效、重启、Consumer关闭等；但是，存在丢数据的风险可能存在如下几种可能：
-    1）ZK的数据可靠性或者安全性被破坏，比如ZK数据丢失，ZK的数据被人为串改，特别是有关Position的值。
-    2）MySQL binlog非正常运维，比如binglog迁移、重命名、丢失等。
-    3）切换MySQL源，比如原来基于M1实例，后来M1因为某种原因失效，那么Canal将数据源切换为M2，而且M1和M2可能binlog数据存在不一致（非常有可能）。
-    4）Consumer端ACK的时机不佳，比如调用get()方法，而不是getWithoutAck()，那么消息有可能尚未完全消费，就已经ACK，那么此时由异常或者Consumer实例失效，则可能导致消息丢失。我们需要在ACK时机上保障“at lease once”。</code></pre><h5 id="Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？"><a href="#Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？" class="headerlink" title="Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？"></a>Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？</h5><pre><code>答：根据数据流的pipeline，“Master” &gt; &quot;Slave&quot; &gt; &quot;Canal&quot; &gt; &quot;Consumer&quot;，每个环节都需要耗时，而且整个管道中都是单线程、串行、阻塞式。（假如网络层面都是良好的）
-    1）如果批量insert、update、delete，都可能导致大量的binlog产生，也会加剧Master与slave之间数据同步的延迟。（写入频繁）
-    2）“Consumer”消费的效能较低，比如每条event执行耗时很长。这会导致数据变更的消息ACK较慢，那么对于Canal而言也将阻塞，直到Canal内部的store有足够的空间存储新消息、才会继续与Slave进行数据同步。
-    3）如果Canal节点ZK的网络联通性不畅，将会导致Canal集群处于动荡状态，大量的时间消耗在ZK状态监测和维护上，而无法对外提供正常服务，包括不能顺畅的dump数据库数据。</code></pre><h5 id="Canal如何重置消费的position？"><a href="#Canal如何重置消费的position？" class="headerlink" title="Canal如何重置消费的position？"></a>Canal如何重置消费的position？</h5><pre><code>答：比如当消费者在消费binlog时，数据异常，需要回溯到旧的position重新消费，是这个场景！
-1）我们首先确保，你需要回溯的position所对应的binlog文件仍然存在，可以通过需要回溯的时间点来确定position和binlog文件名，这一点可以通过DBA来确认。
-2）关闭消费者，否则重置位点操作无法生效。（你可以在关闭消费者之前执行unsubscribe，来删除ZK中历史位点的信息）
-3）关闭Canal集群，修改对应的destination下的配置文件中的“canal.instance.master.journal.name = &lt;此position对应的binlog名称&gt;”、“canal.instance.master.position = &lt;此position&gt;”；可以只需要修改一台。
-4）删除zk中此destination的消费者meta信息，“${destination}/1001&quot;此path下所有的子节点，以及“1001”节点。（可以通过消费者执行unsubscribe来实现）
-5）重启2）中的此canal节点，观察日志。
-6）重启消费者。</code></pre>
+      		<h1 id="Netty底层通讯原理（NIO）"><a href="#Netty底层通讯原理（NIO）" class="headerlink" title="Netty底层通讯原理（NIO）"></a><strong>Netty底层通讯原理（NIO）</strong></h1><h4 id="Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll"><a href="#Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll" class="headerlink" title="Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select/epoll"></a><em>Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select/epoll</em></h4><p>–more–&gt;<br><strong>Netty-server</strong>端初始化的时候会构造两个线程池(<strong>bossEventLoopGroup,workEventLoopGrou</strong>p)，基于<strong>reactor</strong>线程池，原理如下：<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/1721645c7d21bc8f?w=800&h=150&f=png&s=41525" alt=""><br><strong>bossEventLoopGroup</strong>根据参数指定启用多少个<strong>eventLoop</strong>来接收客户端连接，一个<strong>eventLoop</strong>就是对应一个<strong>线程</strong>。<strong>eventLoop</strong>会启用<strong>selector</strong>选择器，注册端口的<strong>connect</strong>事件，只要工作就是<strong>鉴权</strong>，<strong>三次握手</strong>，然后将<strong>accept()</strong>的<strong>channel</strong>注册到<strong>workEventLoopGroup</strong>中的一个<strong>eventLoop</strong>上，给这个<strong>channel</strong>在该<strong>workEventLoop</strong>的<strong>selector</strong>上注册读写事件。</p>
+<p><strong>workEventLoopGroup</strong>机制和boss差不多，也是根据初始化参数构造指定<strong>eventLoop</strong>，但是主要的<strong>业务处理</strong>是这个工作线程来处理的。</p>
+<p>Netty的通讯方式是基于NIO实现，根据<strong>selector.select()</strong>方法获取注册的感兴趣的fd就绪事件，<br><strong>selecor.select()</strong>方法默认是<strong>阻塞</strong>的(<strong>内核阻塞</strong>，如果有fd事件就绪会唤醒读取返回)，如果select方法传了时间参数，则会在指定时间后返回。</p>
+<p>Netty的底层通讯，获取就绪fd事件，也有多种实现机制，比如select/poll/epoll</p>
+<h4 id="select-poll"><a href="#select-poll" class="headerlink" title="select/poll"></a>select/poll</h4><p>select的原理如下：</p>
+<h6 id="用户程序发起读操作后，将阻塞查询读数据是否可用，直到内核准备好数据后，用户程序才会真正的读取数据"><a href="#用户程序发起读操作后，将阻塞查询读数据是否可用，直到内核准备好数据后，用户程序才会真正的读取数据" class="headerlink" title="用户程序发起读操作后，将阻塞查询读数据是否可用，直到内核准备好数据后，用户程序才会真正的读取数据"></a>用户程序发起读操作后，将阻塞查询读数据是否可用，直到内核准备好数据后，用户程序才会真正的读取数据</h6><p><img src="https://user-gold-cdn.xitu.io/2020/5/15/172163f5d41fa300?w=418&h=364&f=png&s=12271" alt=""></p>
+<p>服务端建立每个连接，相当于打开文件，会获得对应的文件描述符（fd），相同的源IP/源端口/目标IP/目标端口对应同一个fd。</p>
+<p>select和poll是相似的，不一样的地方是，select是使用<strong>数组</strong>，有连接数限制，而poll使用<strong>链表</strong>，无连接数限制。</p>
+<p>监听连接时，从<strong>用户层</strong>的角度看，<br>（1）会构建3个fd数组，分别关注读/写/异常事件，设置超时时间，调用系统提供的select方法。<br>（2）调用select方法时，需要将fd数组传到内核态，等待部分fd就绪后，把fd数组（包含就绪状态）返回到用户态<br>（3）用户程序对fd数组进行遍历，处理就绪的fd<br>（4）重新调用select方法。</p>
+<p>可以看出不好的地方是<br>（1）每次都要传入fd数组，返回整个fd数组，导致了大量在用户空间和内核空间的相互拷贝。<br>（2）用户程序仍需要遍历fd数组才能找出就绪的fd</p>
+<p>从<strong>系统层</strong>的角度看，调用select方法时<br>（1）遍历fd数组，对于每个fd，调用其对应的poll方法（由设备对应的驱动程序实现），将fd所在线程加入等待队列，并且检查就绪状态，记录感兴趣的就绪状态。<br>（2）如果存在感兴趣的就绪状态，直接返回<br>（3）如果不存在感兴趣的就绪状态，进入休眠，等待fd就绪后，会唤醒等待队列中的线程<br>（4）被唤醒后，重复1-4的操作。</p>
+<p>可以看出不好的地方是每次都需要检查所有fd。</p>
+<h4 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h4><p>epoll原理图:</p>
+<h6 id="epoll使用“事件”的方式通知用户程序数据就绪，并且使用内存拷贝的方式使用户程序直接读取内核准备好的数据，不用再读取数据"><a href="#epoll使用“事件”的方式通知用户程序数据就绪，并且使用内存拷贝的方式使用户程序直接读取内核准备好的数据，不用再读取数据" class="headerlink" title="epoll使用“事件”的方式通知用户程序数据就绪，并且使用内存拷贝的方式使用户程序直接读取内核准备好的数据，不用再读取数据"></a>epoll使用“事件”的方式通知用户程序数据就绪，并且使用内存拷贝的方式使用户程序直接读取内核准备好的数据，不用再读取数据</h6><p><img src="https://user-gold-cdn.xitu.io/2020/5/15/17216402f258f1e9?w=467&h=364&f=png&s=9195" alt=""></p>
+<p>epoll相对select改善了很多。<br>（1）在使用epoll时，首先会构建epoll对象。<br>（2）有连接接入时，会插入到epoll对象中，epoll对象里实际是一个红黑树+双向链表，fd插入到红黑树中，通过红黑树查找到是否重复<br>（3）一旦fd就绪，会触发回调把fd的插入到就绪链表中，并唤醒等待队列中的线程。<br>（4）调用epoll_wait方法时只需要检查就绪链表，如有则返回给用户程序，如没有进入等待队列。</p>
+<p>由于epoll把fd管理起来，不需要每次都重复传入，而且只返回就绪的fd，因此减少了用户空间和内核空间的相互拷贝，在fd数量庞大的时候更加高效。</p>
+<p>Netty可以选择使用不同的多路复用技术。</p>
+<h4 id="NioEventLoop"><a href="#NioEventLoop" class="headerlink" title="NioEventLoop"></a>NioEventLoop</h4><p>NioEventLoop底层会根据<strong>系统</strong>选择select或者epoll。如果是<strong>windows</strong>系统，则底层使用<strong>WindowsSelectorProvider（select</strong>实现多路复用；如果是<strong>linux</strong>，则使用<strong>epoll</strong></p>
+<p>当为select模式，在NioEventLoop对应的Selector中会维护着newKeys，updateKeys，cancelledKeys，分别是新增的fd，更新fd的感兴趣状态，取消fd监听。每当连接接入，或者断连，都会调用NioEventLoop的注册/解除注册方法，更新这几个集合。（这里是JDK11的实现，在JDK8中则直接更新PollArrayWrapper）</p>
+<p>NioEventLoop在运行的时候，会不断的监听注册的连接，核心逻辑在doSelect方法中，主要的几个操作是<br>（1）processUpdateQueue，将newKeys，updateKeys，cancelledKeys中的key更新到PollArrayWrapper中<br>（2）subSelector.poll()，这里实际是调用native方法，会将PollArrayWrapper的fd拷贝至readFds/writeFds/exceptFds，并监听这些fd。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">int</span> <span class="title">poll0</span><span class="params">(<span class="keyword">long</span> pollAddress, <span class="keyword">int</span> numfds,</span></span></span><br><span class="line"><span class="function"><span class="params">             <span class="keyword">int</span>[] readFds, <span class="keyword">int</span>[] writeFds, <span class="keyword">int</span>[] exceptFds, <span class="keyword">long</span> timeout)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>（3）updateSelectedKeys，遍历freadFds/writeFds/exceptFds，将就绪的fd存储到selectedKey中</p>
+<p>当存在fd就绪后，doSelect方法返回，应用程序可以遍历selectedKey进行处理。</p>
+<h4 id="EpollEventLoop"><a href="#EpollEventLoop" class="headerlink" title="EpollEventLoop"></a>EpollEventLoop</h4><p>EpollEventLoop底层使用epoll实现多路复用。</p>
+<p>EpollEventLoop中会初始化epollFd、eventFd、timerFd。</p>
+<ul>
+<li>epollFd是调用系统方法生成的epoll对象，后续会使用其管理所有需要监听的fd</li>
+<li>eventFd是用于线程通讯，程序会把eventFd添加到epollFd中，监听eventFd，一旦eventFd有操作，则会唤醒调用epoll_wait的线程。</li>
+<li>timerFd是用于计时，同样的监听timerFd，一旦时间到达，则会唤醒调用epoll_wait的线程。</li>
+</ul>
+<p>每当连接接入或者断连，都会调用epoll_ctl_add/epoll_ctl_del方法来操作epoll对象。</p>
+<p>在EpollEventLoop的run方法中，会调用epoll_wait来监听所有fd，一旦有fd就绪，会拷贝至EpollEventArray中，应用程序遍历EpollEventArray处理所有就绪事件</p>
+
       	
       
     </div>
@@ -275,7 +291,7 @@
   <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
   <p>扫一扫，分享到微信</p>
   <div class="wx-qrcode">
-    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/" alt="微信分享二维码">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/03/15/netty/" alt="微信分享二维码">
   </div>
 </div>
 
@@ -289,18 +305,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/03/15/netty/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Netty底层通讯原理（NIO）
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Canal架构组件</div>
+    <a href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Canal一些开发问题</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -327,7 +334,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Canal一些开发问题"><span class="toc-number">1.</span> <span class="toc-text">Canal一些开发问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#开发canal过程中需要注意的一些问题：数据问题和性能问题"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">开发canal过程中需要注意的一些问题：数据问题和性能问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Canal会导致消息重复吗？"><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">Canal会导致消息重复吗？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Canal会不会丢失数据？"><span class="toc-number">1.0.0.1.2.</span> <span class="toc-text">Canal会不会丢失数据？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？"><span class="toc-number">1.0.0.1.3.</span> <span class="toc-text">Canal的延迟很大是什么原因？Canal的延迟很大是什么原因？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Canal如何重置消费的position？"><span class="toc-number">1.0.0.1.4.</span> <span class="toc-text">Canal如何重置消费的position？</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Netty底层通讯原理（NIO）"><span class="toc-number">1.</span> <span class="toc-text">Netty底层通讯原理（NIO）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#select-poll"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">select&#x2F;poll</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#用户程序发起读操作后，将阻塞查询读数据是否可用，直到内核准备好数据后，用户程序才会真正的读取数据"><span class="toc-number">1.0.0.2.0.1.</span> <span class="toc-text">用户程序发起读操作后，将阻塞查询读数据是否可用，直到内核准备好数据后，用户程序才会真正的读取数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#epoll"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">epoll</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#epoll使用“事件”的方式通知用户程序数据就绪，并且使用内存拷贝的方式使用户程序直接读取内核准备好的数据，不用再读取数据"><span class="toc-number">1.0.0.3.0.1.</span> <span class="toc-text">epoll使用“事件”的方式通知用户程序数据就绪，并且使用内存拷贝的方式使用户程序直接读取内核准备好的数据，不用再读取数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NioEventLoop"><span class="toc-number">1.0.0.4.</span> <span class="toc-text">NioEventLoop</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#EpollEventLoop"><span class="toc-number">1.0.0.5.</span> <span class="toc-text">EpollEventLoop</span></a></li></ol></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
