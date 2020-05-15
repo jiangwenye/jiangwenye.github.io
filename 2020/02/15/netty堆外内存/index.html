@@ -7,15 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>CanJ--Grow</title>
+  <title>Netty的堆外内存（非池化）的回收机制 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="CanJ--Grow">
-<meta property="og:url" content="http://jiangwenye.github.io/index.html">
+  <meta name="description" content="Netty的堆外内存（非池化）的回收机制讲解一下netty使用的堆外内存ByteBuffer是怎么gc的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty的堆外内存（非池化）的回收机制">
+<meta property="og:url" content="http://jiangwenye.github.io/2020/02/15/netty%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
+<meta property="og:description" content="Netty的堆外内存（非池化）的回收机制讲解一下netty使用的堆外内存ByteBuffer是怎么gc的">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2020-02-15T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-15T03:52:12.979Z">
 <meta property="article:author" content="CanJ">
+<meta property="article:tag" content="netty">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -157,119 +162,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-canal一些开发问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-netty堆外内存" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/">Canal一些开发问题</a>
-    </h1>
-  
-
-        
-        <a href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2020-03-15T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-15</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Canal一些开发问题"><a href="#Canal一些开发问题" class="headerlink" title="Canal一些开发问题"></a><strong>Canal一些开发问题</strong></h1><h4 id="开发canal过程中需要注意的一些问题：数据问题和性能问题"><a href="#开发canal过程中需要注意的一些问题：数据问题和性能问题" class="headerlink" title="开发canal过程中需要注意的一些问题：数据问题和性能问题"></a><em>开发canal过程中需要注意的一些问题：数据问题和性能问题</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">canal</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据同步</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/canal/" class="article-tag-list-link color1">canal</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-netty堆外内存" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/15/netty%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98/">Netty的堆外内存（非池化）的回收机制</a>
+    <h1 class="article-title" itemprop="name">
+      Netty的堆外内存（非池化）的回收机制
     </h1>
   
 
@@ -281,19 +181,10 @@
       </header>
     
     
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Netty的堆外内存（非池化）的回收机制"><a href="#Netty的堆外内存（非池化）的回收机制" class="headerlink" title="Netty的堆外内存（非池化）的回收机制"></a><strong>Netty的堆外内存（非池化）的回收机制</strong></h1><h4 id="讲解一下netty使用的堆外内存ByteBuffer是怎么gc的"><a href="#讲解一下netty使用的堆外内存ByteBuffer是怎么gc的" class="headerlink" title="讲解一下netty使用的堆外内存ByteBuffer是怎么gc的"></a><em>讲解一下netty使用的堆外内存ByteBuffer是怎么gc的</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
+      <div class="article-section">
+        <div class="tag-category">
           
-            <div class="tag-box">
-              
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -305,7 +196,7 @@
 		</ul>
 	</div>
 
-              
+          
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -318,122 +209,86 @@
 	</div>
 
 
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/02/15/netty%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98/">全文 >></a>
-            </p>
-          
-          </div>
         </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-canal架构组件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/">Canal架构组件</a>
-    </h1>
-  
-
-        
-        <a href="/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/" class="archive-article-date">
-  	<time datetime="2020-02-06T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-06</time>
-</a>
-        
-      </header>
-    
+      </div>
     
     <div class="article-entry" itemprop="articleBody">
       
 
-      			<h1 id="Canal架构组件"><a href="#Canal架构组件" class="headerlink" title="Canal架构组件"></a><strong>Canal架构组件</strong></h1><p><em>转载自—<a href="https://blog.csdn.net/u013200380/article/details/80963569#31-canal的设计理念" target="_blank" rel="noopener">https://blog.csdn.net/u013200380/article/details/80963569#31-canal的设计理念</a></em></p>
+      	
+      		<h1 id="Netty的堆外内存（非池化）的回收机制"><a href="#Netty的堆外内存（非池化）的回收机制" class="headerlink" title="Netty的堆外内存（非池化）的回收机制"></a><strong>Netty的堆外内存（非池化）的回收机制</strong></h1><h4 id="讲解一下netty使用的堆外内存ByteBuffer是怎么gc的"><a href="#讲解一下netty使用的堆外内存ByteBuffer是怎么gc的" class="headerlink" title="讲解一下netty使用的堆外内存ByteBuffer是怎么gc的"></a><em>讲解一下netty使用的堆外内存ByteBuffer是怎么gc的</em></h4><a id="more"></a>
+
+<p>Netty有多种内存管理机制：<strong>池化和非池化；jvm堆内存和jvm堆外内存</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ByteBuffer <span class="title">allocateDirect</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DirectByteBuffer(capacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>这个方法就是获取堆外内存ByteBuffer</strong></p>
+<p><strong>一般线上开发推荐使用jvm堆外内存。</strong></p>
+<h4 id="jvm堆外内存有几个好处"><a href="#jvm堆外内存有几个好处" class="headerlink" title="jvm堆外内存有几个好处:"></a>jvm堆外内存有几个好处:</h4><p>1.netty主要是基于传输才搞了一个这个内存机制，所以主要消耗还是在socket/io上的，一般socket/io分为几个步骤:用户态切换到内核态，将数据（ByteBuf存储）拷贝到内核态，然后将内核数据拷贝到socket缓冲区，然后发送。如果使用堆外内存的话，由于数据本来就在内核缓冲中，所以省去一部拷贝进内核缓冲的操作，高并发的情况下，性能提升也是可观的。<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/172165ed59266b6f?w=676&h=278&f=webp&s=7112" alt=""><br>这个是DirectByteBuffer的关联图，其在jvm堆内创建的只是一个指向堆外内存实际存储的引用，基本没有内存消耗。<br>2.ByteBuf的回收不需要jvm托管，减少gc压力，下面会详细讲解堆外内存gc流程。</p>
+<h4 id="但是堆外内存也是有缺点的："><a href="#但是堆外内存也是有缺点的：" class="headerlink" title="但是堆外内存也是有缺点的："></a>但是堆外内存也是有缺点的：</h4><p>堆外内存的回收也是基于其被对内引用对象的回收（基于虚引用），如果堆内的关联对象一直不gc，那么堆外的这块内存就相当于泄露掉了。</p>
+<h5 id="堆外内存（非池化）GC机制"><a href="#堆外内存（非池化）GC机制" class="headerlink" title="堆外内存（非池化）GC机制:"></a>堆外内存（非池化）GC机制:</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">DirectByteBuffer(<span class="keyword">int</span> cap) &#123;                   <span class="comment">// package-private</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">super</span>(-<span class="number">1</span>, <span class="number">0</span>, cap, cap);</span><br><span class="line">        <span class="keyword">boolean</span> pa = VM.isDirectMemoryPageAligned();</span><br><span class="line">        <span class="keyword">int</span> ps = Bits.pageSize();</span><br><span class="line">        <span class="keyword">long</span> size = Math.max(<span class="number">1L</span>, (<span class="keyword">long</span>)cap + (pa ? ps : <span class="number">0</span>));</span><br><span class="line">        Bits.reserveMemory(size, cap);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> base = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            base = unsafe.allocateMemory(size);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (OutOfMemoryError x) &#123;</span><br><span class="line">            Bits.unreserveMemory(size, cap);</span><br><span class="line">            <span class="keyword">throw</span> x;</span><br><span class="line">        &#125;</span><br><span class="line">        unsafe.setMemory(base, size, (<span class="keyword">byte</span>) <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (pa &amp;&amp; (base % ps != <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="comment">// Round up to page boundary</span></span><br><span class="line">            address = base + ps - (base &amp; (ps - <span class="number">1</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            address = base;</span><br><span class="line">        &#125;</span><br><span class="line">        cleaner = Cleaner.create(<span class="keyword">this</span>, <span class="keyword">new</span> Deallocator(base, size, cap));</span><br><span class="line">        att = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>主要关注上面的Cleaner.create方法<br>他在向堆外内存申请ByteBuffer方法的时候会同时创建一个Cleaner，这个对象继承PhantomReference，表示这个对象是一个虚引用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Deallocator</span></span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">Runnable</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Unsafe unsafe = Unsafe.getUnsafe();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">long</span> address;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">long</span> size;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> capacity;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">Deallocator</span><span class="params">(<span class="keyword">long</span> address, <span class="keyword">long</span> size, <span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">assert</span> (address != <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">this</span>.address = address;</span><br><span class="line">            <span class="keyword">this</span>.size = size;</span><br><span class="line">            <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (address == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// Paranoia</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            unsafe.freeMemory(address);</span><br><span class="line">            address = <span class="number">0</span>;</span><br><span class="line">            Bits.unreserveMemory(size, capacity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>创建cleaner的同时，还传入一个Deallocator对象这个对象主要是用作线程的run方法，他的run方法里有个unsafe,freeMemory（address）方法，这个方法就是调用native方法释放堆外内存。<br>那什么时候会触发这个run()方法呢。<br>如果一个DirectByteBuffer对象失去引用的时候，在ygc的时候就会回收，他内部还有一个cleaner对象，这是个虚引用对象，如果cleaner当前没有任何对象引用他，他就会将这个cleaner扔入一个队列（jvm后台有个守护线程用户维护没有引用的虚引用，并调用他的clean方法）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (remove(<span class="keyword">this</span>)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.thunk.run();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (<span class="keyword">final</span> Throwable var2) &#123;</span><br><span class="line">                AccessController.doPrivileged(<span class="keyword">new</span> PrivilegedAction&lt;Void&gt;() &#123;</span><br><span class="line">                    <span class="function"><span class="keyword">public</span> Void <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">if</span> (System.err != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            (<span class="keyword">new</span> Error(<span class="string">"Cleaner terminated abnormally"</span>, var2)).printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        System.exit(<span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>看一下cleaner的clean方法<br>里面的thunk.run（）就是调用Deallocator的run()方法。<br>现在就应该一目了然了。</p>
+<p>由此可见只要是gc就能回收已不可达的directByteBuffer,然后对应的堆外内存也会被调用释放(YGC和FGC都能释放堆外内存，网上的一些关于只有FGC才会回收堆外内存是错误的)，只是如果directbytebuffer一不小心进入老年代，而系统又迟迟不触发fgc，那只能外部显示调用system.gc()来触发老年代中的堆外内存回收（手动只能通过sys.gc()触发fgc，没有ygc触发方法）。</p>
+<h6 id="如需转载，请注明出处：https-jiangwenye-github-io-2019-02-15-Netty的堆外内存（非池化）的回收机制-3q"><a href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-02-15-Netty的堆外内存（非池化）的回收机制-3q" class="headerlink" title="如需转载，请注明出处：https://jiangwenye.github.io/2019/02/15/Netty的堆外内存（非池化）的回收机制/  3q!"></a><em>如需转载，请注明出处：<a href="https://jiangwenye.github.io/2019/02/15/Netty的堆外内存（非池化）的回收机制/">https://jiangwenye.github.io/2019/02/15/Netty的堆外内存（非池化）的回收机制/</a>  3q!</em></h6>
       	
       
     </div>
     
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">canal</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据同步</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/canal/" class="article-tag-list-link color1">canal</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
     
+       <div class="article-info article-info-index">
+          
+<div class="share-icons">
+    <a class="weibo share-sns" data-type="weibo">
+      <i class="icon icon-weibo"></i>
+    </a>
+    <a class="weixin share-sns wxFab" data-type="weixin">
+      <i class="icon icon-weixin"></i>
+    </a>
+    <a class="qzone share-sns" data-type="qzone">
+      <i class="icon icon-qzone"></i>
+    </a>
+    <a class="google share-sns" data-type="google">
+      <i class="icon icon-google"></i>
+    </a>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/02/15/netty%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
+       </div>
     
     <div class="clearfix"></div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2020/03/15/canal%E4%B8%80%E4%BA%9B%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Canal一些开发问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/02/06/canal%E6%9E%B6%E6%9E%84%E7%BB%84%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Canal架构组件</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -448,96 +303,18 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-mysql执行计划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/">Mysql执行计划详解</a>
-    </h1>
-  
-
-        
-        <a href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" class="archive-article-date">
-  	<time datetime="2020-02-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-02</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Mysql执行计划详解"><a href="#Mysql执行计划详解" class="headerlink" title="Mysql执行计划详解"></a><strong>Mysql执行计划详解</strong></h1><p><em>转载自—<a href="https://www.cnblogs.com/yinjw/p/11864477.html" target="_blank" rel="noopener">https://www.cnblogs.com/yinjw/p/11864477.html</a></em></p>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/mysql/" class="article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Netty的堆外内存（非池化）的回收机制"><span class="toc-number">1.</span> <span class="toc-text">Netty的堆外内存（非池化）的回收机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#讲解一下netty使用的堆外内存ByteBuffer是怎么gc的"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">讲解一下netty使用的堆外内存ByteBuffer是怎么gc的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#jvm堆外内存有几个好处"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">jvm堆外内存有几个好处:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#但是堆外内存也是有缺点的："><span class="toc-number">1.0.0.3.</span> <span class="toc-text">但是堆外内存也是有缺点的：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#堆外内存（非池化）GC机制"><span class="toc-number">1.0.0.3.1.</span> <span class="toc-text">堆外内存（非池化）GC机制:</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-02-15-Netty的堆外内存（非池化）的回收机制-3q"><span class="toc-number">1.0.0.3.1.1.</span> <span class="toc-text">如需转载，请注明出处：https:&#x2F;&#x2F;jiangwenye.github.io&#x2F;2019&#x2F;02&#x2F;15&#x2F;Netty的堆外内存（非池化）的回收机制&#x2F;  3q!</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
-        
         
     </div>
 </aside>
@@ -545,607 +322,19 @@
 
 
 
-
-  
-    <article id="post-mysql优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/09/mysql%E4%BC%98%E5%8C%96/">Mysql优化总结</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/09/mysql%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2020-01-09T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-09</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Mysql优化总结"><a href="#Mysql优化总结" class="headerlink" title="Mysql优化总结"></a><strong>Mysql优化总结</strong></h1><h4 id="编写sql的时候可以借鉴一下以下注意点"><a href="#编写sql的时候可以借鉴一下以下注意点" class="headerlink" title="编写sql的时候可以借鉴一下以下注意点"></a><em>编写sql的时候可以借鉴一下以下注意点</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">sql优化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/mysql/" class="article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/01/09/mysql%E4%BC%98%E5%8C%96/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-hbase" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/02/hbase/">HBase的读写底层原理</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/02/hbase/" class="archive-article-date">
-  	<time datetime="2020-01-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-02</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="HBase的读写底层原理"><a href="#HBase的读写底层原理" class="headerlink" title="HBase的读写底层原理"></a><strong>HBase的读写底层原理</strong></h1><h4 id="简单阐述以下HBase读写高性能的底层原理"><a href="#简单阐述以下HBase读写高性能的底层原理" class="headerlink" title="简单阐述以下HBase读写高性能的底层原理"></a><em>简单阐述以下HBase读写高性能的底层原理</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">HBase</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/HBase/" class="article-tag-list-link color1">HBase</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/01/02/hbase/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-canal-client源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/02/canal-client%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Canal-Client如何工作</a>
-    </h1>
-  
-
-        
-        <a href="/2020/01/02/canal-client%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2020-01-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-02</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Canal-Client如何工作"><a href="#Canal-Client如何工作" class="headerlink" title="Canal-Client如何工作"></a><strong>Canal-Client如何工作</strong></h1><h4 id="阿里数据同步中间件–canal的客户端如何消费mysql的binlog数据"><a href="#阿里数据同步中间件–canal的客户端如何消费mysql的binlog数据" class="headerlink" title="阿里数据同步中间件–canal的客户端如何消费mysql的binlog数据"></a><em>阿里数据同步中间件–canal的客户端如何消费mysql的binlog数据</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">canal</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据同步</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/canal/" class="article-tag-list-link color1">canal</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2020/01/02/canal-client%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-disruptor" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/02/disruptor/">高性能队列Disruptor</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/02/disruptor/" class="archive-article-date">
-  	<time datetime="2019-12-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-02</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="高性能队列Disruptor"><a href="#高性能队列Disruptor" class="headerlink" title="高性能队列Disruptor"></a><strong>高性能队列Disruptor</strong></h1><h4 id="前段时间网上看到这个队列，mark一波，追求性能的时候可以配合线程池用-ps-canal的event-store也是基于RingBuffer实现的"><a href="#前段时间网上看到这个队列，mark一波，追求性能的时候可以配合线程池用-ps-canal的event-store也是基于RingBuffer实现的" class="headerlink" title="前段时间网上看到这个队列，mark一波，追求性能的时候可以配合线程池用,ps:canal的event-store也是基于RingBuffer实现的."></a><em>前段时间网上看到这个队列，mark一波，追求性能的时候可以配合线程池用,ps:canal的event-store也是基于RingBuffer实现的.</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">队列</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">线程</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">disruptor</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/disruptor/" class="article-tag-list-link color5">disruptor</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2019/12/02/disruptor/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-dubbo-netty" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/14/dubbo-netty/">Dubbo通讯机制源码解析</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/14/dubbo-netty/" class="archive-article-date">
-  	<time datetime="2019-11-14T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-14</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Dubbo通讯机制源码解析"><a href="#Dubbo通讯机制源码解析" class="headerlink" title="Dubbo通讯机制源码解析"></a><strong>Dubbo通讯机制源码解析</strong></h1><h4 id="dubbo底层运用netty发送接收消息源码分析—"><a href="#dubbo底层运用netty发送接收消息源码分析—" class="headerlink" title="dubbo底层运用netty发送接收消息源码分析—"></a><em>dubbo底层运用netty发送接收消息源码分析—</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2019/11/14/dubbo-netty/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-    <article id="post-dubbo-export" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/13/dubbo-export/">Dubbo服务暴露源码分析</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/13/dubbo-export/" class="archive-article-date">
-  	<time datetime="2019-11-13T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
-</a>
-        
-      </header>
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-      			<h1 id="Dubbo服务暴露源码分析"><a href="#Dubbo服务暴露源码分析" class="headerlink" title="Dubbo服务暴露源码分析"></a><strong>Dubbo服务暴露源码分析</strong></h1><h4 id="duubo提供者初始化源码分析—"><a href="#duubo提供者初始化源码分析—" class="headerlink" title="duubo提供者初始化源码分析—"></a><em>duubo提供者初始化源码分析—</em></h4>
-      	
-      
-    </div>
-    
-        <div class="article-info article-info-index">
-          <div class="tag-category">
-          
-            <div class="tag-box">
-              
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-              
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/dubbo/" class="article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-            </div>
-          
-            <p class="article-more-link">
-              <a class="article-more-a" href="/2019/11/13/dubbo-export/">全文 >></a>
-            </p>
-          
-          </div>
-        </div>
-    
-    
-    <div class="clearfix"></div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-  
-  
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&amp;raquo;</a>
-    </nav>
-  
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s)
+  })();
+</script>
 
 
           </div>
@@ -1168,8 +357,8 @@
     <script>
 var yiliaConfig = {
     mathjax: true,
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isArchive: false,
     isTag: false,
     isCategory: false,
