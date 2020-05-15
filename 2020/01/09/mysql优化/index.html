@@ -7,15 +7,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
-  <title>Archives: 2020/1 - CanJ--Grow</title>
+  <title>Mysql优化总结 - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="CanJ--Grow">
-<meta property="og:url" content="http://jiangwenye.github.io/archives/2020/01/index.html">
+  <meta name="description" content="Mysql优化总结编写sql的时候可以借鉴一下以下注意点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql优化总结">
+<meta property="og:url" content="http://jiangwenye.github.io/2020/01/09/mysql%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
+<meta property="og:description" content="Mysql优化总结编写sql的时候可以借鉴一下以下注意点">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2020-01-09T12:46:25.000Z">
+<meta property="article:modified_time" content="2020-05-15T02:43:37.103Z">
 <meta property="article:author" content="CanJ">
+<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="sql优化">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://jiangwenye.github.io/img/avatar.jpg">
   
@@ -157,35 +163,28 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-mysql优化" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/01/09/mysql%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2020-01-09T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-09</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/01/09/mysql%E4%BC%98%E5%8C%96/">Mysql优化总结</a>
+    <h1 class="article-title" itemprop="name">
+      Mysql优化总结
     </h1>
   
 
-        <div class="article-info info-on-left">
+        
+        <a href="/2020/01/09/mysql%E4%BC%98%E5%8C%96/" class="archive-article-date">
+  	<time datetime="2020-01-09T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-09</time>
+</a>
+        
+      </header>
+    
+    
+      <div class="article-section">
+        <div class="tag-category">
+          
           
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
@@ -216,134 +215,171 @@
 
 
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+      	
+      		<h1 id="Mysql优化总结"><a href="#Mysql优化总结" class="headerlink" title="Mysql优化总结"></a><strong>Mysql优化总结</strong></h1><h4 id="编写sql的时候可以借鉴一下以下注意点"><a href="#编写sql的时候可以借鉴一下以下注意点" class="headerlink" title="编写sql的时候可以借鉴一下以下注意点"></a><em>编写sql的时候可以借鉴一下以下注意点</em></h4><a id="more"></a>
+<h4 id="一、EXPLAIN"><a href="#一、EXPLAIN" class="headerlink" title="一、EXPLAIN"></a>一、EXPLAIN</h4><p>做MySQL优化，我们要善用 EXPLAIN 查看SQL执行计划。<br>下面来个简单的示例，标注(1,2,3,4,5)我们要重点关注的数据<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/1721624e03f05eb1?w=800&h=103&f=webp&s=16200" alt=""></p>
+<ul>
+<li>type列，连接类型。一个好的sql语句至少要达到range级别。杜绝出现all级别</li>
+<li>key列，使用到的索引名。如果没有选择索引，值是NULL。可以采取强制索引方式</li>
+<li>key_len列，索引长度</li>
+<li>rows列，扫描行数。该值是个预估值</li>
+<li>extra列，详细说明。注意常见的不太友好的值有：Using filesort, Using temporary</li>
+</ul>
+<h4 id="二、SQL语句中IN包含的值不应过多"><a href="#二、SQL语句中IN包含的值不应过多" class="headerlink" title="二、SQL语句中IN包含的值不应过多"></a>二、SQL语句中IN包含的值不应过多</h4><p>MySQL对于<strong>IN</strong>做了相应的优化，即将IN中的常量全部存储在一个数组里面，而且这个数组是排好序的。但是如果数值较多，产生的消耗也是比较大的。再例如：<strong>select id from table_name where num in(1,2,3)</strong> 对于连续的数值，能用 <strong>between</strong> 就不要用 <strong>in</strong> 了；再或者使用连接来替换。</p>
+<h4 id="三、SELECT语句务必指明字段名称"><a href="#三、SELECT语句务必指明字段名称" class="headerlink" title="三、SELECT语句务必指明字段名称"></a>三、SELECT语句务必指明字段名称</h4><p>SELECT <em>增加很多不必要的消耗（*</em>cpu、io、内存、网络带宽<strong>）；增加了使用</strong>覆盖索引**的可能性；当表结构发生改变时，前断也需要更新。所以要求直接在select后面接上字段名。</p>
+<h4 id="四、当只需要一条数据的时候，使用limit-1"><a href="#四、当只需要一条数据的时候，使用limit-1" class="headerlink" title="四、当只需要一条数据的时候，使用limit 1"></a>四、当只需要一条数据的时候，使用limit 1</h4><p><font color='red'><em>ps:尤其是在对非唯一索引和没有索引数据检索的时候</em></font><br>这是为了使EXPLAIN中type列达到const类型</p>
+<h4 id="五、如果排序字段没有用到索引，就尽量少排序"><a href="#五、如果排序字段没有用到索引，就尽量少排序" class="headerlink" title="五、如果排序字段没有用到索引，就尽量少排序"></a>五、如果排序字段没有用到索引，就尽量少排序</h4><h4 id="六、如果限制条件中其他字段没有索引，尽量少用or"><a href="#六、如果限制条件中其他字段没有索引，尽量少用or" class="headerlink" title="六、如果限制条件中其他字段没有索引，尽量少用or"></a>六、如果限制条件中其他字段没有索引，尽量少用or</h4><p>or两边的字段中，如果有一个不是索引字段，而其他条件也不是索引字段，会造成该查询不走索引的情况。很多时候使用 <strong>union all</strong> 或者是<strong>union</strong>(必要的时候)的方式来代替“<strong>or</strong>”会得到更好的效果</p>
+<h4 id="七、尽量用union-all代替union"><a href="#七、尽量用union-all代替union" class="headerlink" title="七、尽量用union all代替union"></a>七、尽量用union all代替union</h4><p><strong>union</strong>和<strong>union all</strong>的差异主要是前者需要将结果集合并后再进行唯一性过滤操作，这就会涉及到排序，增加大量的CPU运算，加大资源消耗及延迟。当然，<strong>union all</strong>的前提条件是两个结果集没有重复数据。</p>
+<h4 id="八、不使用ORDER-BY-RAND"><a href="#八、不使用ORDER-BY-RAND" class="headerlink" title="八、不使用ORDER BY RAND()"></a>八、不使用ORDER BY RAND()</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> <span class="string">`table_name`</span> </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">rand</span>() <span class="keyword">limit</span> <span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+<p>上面的sql语句，可优化为</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> <span class="string">`table_name`</span> t1 <span class="keyword">join</span> </span><br><span class="line">(<span class="keyword">select</span> <span class="keyword">rand</span>() * (<span class="keyword">select</span> <span class="keyword">max</span>(<span class="keyword">id</span>) <span class="keyword">from</span> <span class="string">`table_name`</span>) <span class="keyword">as</span> nid) t2 </span><br><span class="line"><span class="keyword">on</span> t1.id &gt; t2.nid <span class="keyword">limit</span> <span class="number">1000</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="九、区分in和exists，-not-in和not-exists"><a href="#九、区分in和exists，-not-in和not-exists" class="headerlink" title="九、区分in和exists， not in和not exists"></a>九、区分in和exists， not in和not exists</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> 表A <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> 表B)</span><br></pre></td></tr></table></figure>
+<p>上面sql语句相当于</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> 表A <span class="keyword">where</span> <span class="keyword">exists</span></span><br><span class="line">(<span class="keyword">select</span> * <span class="keyword">from</span> 表B <span class="keyword">where</span> 表B.id=表A.id)</span><br></pre></td></tr></table></figure>
+<p>区分in和exists主要是造成了驱动顺序的改变（这是性能变化的关键），如果是<strong>exists</strong>，那么<strong>以外层表为驱动表</strong>，先被访问，如果是<strong>IN</strong>，那么<strong>先执行子查询</strong>。所以IN适合于外表大而内表小的情况；EXISTS适合于外表小而内表大的情况。</p>
+<p><font color='red'>关于not in和not exists，推荐使用not exists，不仅仅是效率问题，not in可能存在逻辑问题。如何高效的写出一个替代not exists的sql语句？</font><br>原sql语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> colname … <span class="keyword">from</span> A表 </span><br><span class="line"><span class="keyword">where</span> a.id <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> b.id <span class="keyword">from</span> B表)</span><br></pre></td></tr></table></figure>
+<p>高效的sql语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> colname … <span class="keyword">from</span> A表 <span class="keyword">Left</span> <span class="keyword">join</span> B表 <span class="keyword">on</span> </span><br><span class="line"><span class="keyword">where</span> a.id = b.id <span class="keyword">where</span> b.id <span class="keyword">is</span> <span class="literal">null</span></span><br></pre></td></tr></table></figure>
+<p>取出的结果集如下图表示，A表不在B表中的数据<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/172162fa2976ccc9?w=331&h=202&f=webp&s=3924" alt=""></p>
+<h4 id="十、使用合理的分页方式以提高分页的效率"><a href="#十、使用合理的分页方式以提高分页的效率" class="headerlink" title="十、使用合理的分页方式以提高分页的效率"></a>十、使用合理的分页方式以提高分页的效率</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> table_name <span class="keyword">limit</span> <span class="number">866613</span>, <span class="number">20</span></span><br></pre></td></tr></table></figure>
+<p>使用上述sql语句做分页的时候，可能有人会发现，随着表数据量的增加，直接使用limit分页查询会越来越慢。<br>优化的方法如下：可以取前一页的最大行数的id，然后根据这个最大的id来限制下一页的起点。比如此列中，上一页最大的id是866612。sql可以采用如下的写法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> table_name <span class="keyword">where</span> <span class="keyword">id</span>&gt; <span class="number">866612</span> <span class="keyword">limit</span> <span class="number">20</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="十一、分段查询"><a href="#十一、分段查询" class="headerlink" title="十一、分段查询"></a>十一、分段查询</h4><p>在一些用户选择页面中，可能一些用户选择的时间范围过大，造成查询缓慢。主要的原因是扫描行数过多。这个时候可以通过程序，分段进行查询，循环遍历，将结果合并处理进行展示。<br>如下图这个sql语句，扫描的行数成百万级以上的时候就可以使用分段查询<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/17216305833ede77?w=800&h=100&f=webp&s=13966" alt=""></p>
+<h4 id="十二、避免在-where-子句中对字段进行-null-值判断"><a href="#十二、避免在-where-子句中对字段进行-null-值判断" class="headerlink" title="十二、避免在 where 子句中对字段进行 null 值判断"></a>十二、避免在 where 子句中对字段进行 null 值判断</h4><p>对于null的判断会导致引擎放弃使用索引而进行全表扫描。</p>
+<h4 id="十三、不建议使用-前缀模糊查询"><a href="#十三、不建议使用-前缀模糊查询" class="headerlink" title="十三、不建议使用%前缀模糊查询"></a>十三、不建议使用%前缀模糊查询</h4><p>例如LIKE “%name”或者LIKE “%name%”，这种查询会导致索引失效而进行全表扫描。但是可以使用LIKE “name%”。<br>那如何查询%name%？<br>如下图所示，虽然给secret字段添加了索引，但在explain结果果并没有使用<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/172163118fca223d?w=800&h=370&f=webp&s=44572" alt=""><br>那么如何解决这个问题呢，答案：使用全文索引<br>在我们查询中经常会用到select id,fnum,fdst from table_name where user_name like ‘%zhangsan%’;。这样的语句，普通索引是无法满足查询需求的。庆幸的是在MySQL中，有全文索引来帮助我们。<br>创建全文索引的sql语法是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> <span class="string">`table_name`</span> <span class="keyword">ADD</span> FULLTEXT <span class="keyword">INDEX</span> <span class="string">`idx_user_name`</span> (<span class="string">`user_name`</span>);</span><br></pre></td></tr></table></figure>
+<p>使用全文索引的sql语句是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,fnum,fdst <span class="keyword">from</span> table_name </span><br><span class="line"><span class="keyword">where</span> <span class="keyword">match</span>(user_name) against(<span class="string">'zhangsan'</span> <span class="keyword">in</span> <span class="built_in">boolean</span> <span class="keyword">mode</span>);</span><br></pre></td></tr></table></figure>
+<p><font color='red'>注意：在需要创建全文索引之前，请联系DBA确定能否创建。同时需要注意的是查询语句的写法与普通索引的区别</font></p>
+<h4 id="十四、避免在where子句中对字段进行表达式操作"><a href="#十四、避免在where子句中对字段进行表达式操作" class="headerlink" title="十四、避免在where子句中对字段进行表达式操作"></a>十四、避免在where子句中对字段进行表达式操作</h4><p>比如</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> table_name <span class="keyword">where</span> age*<span class="number">2</span>=<span class="number">36</span>;</span><br></pre></td></tr></table></figure>
+<p>中对字段就行了算术运算，这会造成引擎放弃使用索引，建议改成</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> user_id,user_project <span class="keyword">from</span> table_name <span class="keyword">where</span> age=<span class="number">36</span>/<span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="十五、避免隐式类型转换"><a href="#十五、避免隐式类型转换" class="headerlink" title="十五、避免隐式类型转换"></a>十五、避免隐式类型转换</h4><p>where 子句中出现 column 字段的类型和传入的参数类型不一致的时候发生的类型转换，建议先确定where中的参数类型<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/172163273bedc452?w=800&h=444&f=webp&s=49254" alt=""></p>
+<h4 id="十六、对于联合索引来说，要遵守最左前缀法则"><a href="#十六、对于联合索引来说，要遵守最左前缀法则" class="headerlink" title="十六、对于联合索引来说，要遵守最左前缀法则"></a>十六、对于联合索引来说，要遵守最左前缀法则</h4><p>举列来说索引含有字段id,name,school，可以直接用id字段，也可以id,name这样的顺序，但是name，school都无法使用这个索引。所以在创建联合索引的时候一定要注意索引字段顺序，常用的查询字段放在最前面</p>
+<h4 id="十七、必要时可以使用force-index来强制查询走某个索引"><a href="#十七、必要时可以使用force-index来强制查询走某个索引" class="headerlink" title="十七、必要时可以使用force index来强制查询走某个索引"></a>十七、必要时可以使用force index来强制查询走某个索引</h4><p>有的时候MySQL优化器采取它认为合适的索引来检索sql语句，但是可能它所采用的索引并不是我们想要的。这时就可以采用force index来强制优化器使用我们制定的索引。</p>
+<h4 id="十八、注意范围查询语句"><a href="#十八、注意范围查询语句" class="headerlink" title="十八、注意范围查询语句"></a>十八、注意范围查询语句</h4><p>对于联合索引来说，如果存在范围查询，比如between,&gt;,&lt;等条件时，会造成后面的索引字段失效。</p>
+<h4 id="十九、关于JOIN优化"><a href="#十九、关于JOIN优化" class="headerlink" title="十九、关于JOIN优化"></a>十九、关于JOIN优化</h4><p><img src="https://user-gold-cdn.xitu.io/2020/5/15/1721632f1a5e3698?w=800&h=271&f=webp&s=10834" alt=""></p>
+<ul>
+<li>LEFT JOIN A表为驱动表</li>
+<li>INNER JOIN MySQL会自动找出那个数据少的表作用驱动表</li>
+<li>RIGHT JOIN B表为驱动表<br><font color='red'>注意：MySQL中没有full join，可以用以下方式来解决</font></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> A <span class="keyword">left</span> <span class="keyword">join</span> B <span class="keyword">on</span> B.name = A.name </span><br><span class="line"><span class="keyword">where</span> B.name <span class="keyword">is</span> <span class="literal">null</span></span><br><span class="line"> <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> B;</span><br></pre></td></tr></table></figure>
+<p><strong>尽量使用inner join，避免left join</strong><br>参与联合查询的表至少为2张表，一般都存在大小之分。如果连接方式是inner join，在没有其他过滤条件的情况下MySQL会自动选择小表作为驱动表，但是left join在驱动表的选择上遵循的是左边驱动右边的原则，即left join左边的表名为驱动表。<br><strong>合理利用索引</strong><br>被驱动表的索引字段作为on的限制字段。<br><strong>利用小表去驱动大表</strong><br><img src="https://user-gold-cdn.xitu.io/2020/5/15/1721633fe6a7e737?w=391&h=321&f=png&s=3725" alt=""><br>从原理图能够直观的看出如果能够减少驱动表的话，减少嵌套循环中的循环次数，以减少 IO总量及CPU运算的次数。<br><strong>巧用STRAIGHT_JOIN</strong><br>inner join是由mysql选择驱动表，但是有些特殊情况需要选择另个表作为驱动表，比如有group by、order by等「Using filesort」、「Using temporary」时。STRAIGHT_JOIN来强制连接顺序，在STRAIGHT_JOIN左边的表名就是驱动表，右边则是被驱动表。在使用STRAIGHT_JOIN有个前提条件是该查询是内连接，也就是inner join。其他链接不推荐使用STRAIGHT_JOIN，否则可能造成查询结果不准确。<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/172163482bc23310?w=623&h=431&f=webp&s=40662" alt=""><br>这个方式有时可能减少3倍的时间</p>
+
+      	
+      
+    </div>
+    
+    
+       <div class="article-info article-info-index">
+          
+<div class="share-icons">
+    <a class="weibo share-sns" data-type="weibo">
+      <i class="icon icon-weibo"></i>
+    </a>
+    <a class="weixin share-sns wxFab" data-type="weixin">
+      <i class="icon icon-weixin"></i>
+    </a>
+    <a class="qzone share-sns" data-type="qzone">
+      <i class="icon icon-qzone"></i>
+    </a>
+    <a class="google share-sns" data-type="google">
+      <i class="icon icon-google"></i>
+    </a>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+  <a class="close js-modal-close" ><i class="icon icon-close"></i></a>
+  <p>扫一扫，分享到微信</p>
+  <div class="wx-qrcode">
+    <img src="//img.fanhaobai.com/qrcode.php?url=http://jiangwenye.github.io/2020/01/09/mysql%E4%BC%98%E5%8C%96/" alt="微信分享二维码">
+  </div>
+</div>
+
+<div class="mask js-mask"></div>
+       </div>
+    
+    <div class="clearfix"></div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/01/02/hbase/" class="archive-article-date">
-  	<time datetime="2020-01-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-02</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2020/02/02/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Mysql执行计划详解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/01/02/hbase/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">HBase的读写底层原理</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/01/02/hbase/">HBase的读写底层原理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">HBase</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/HBase/" class="article-tag-list-link color1">HBase</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Mysql优化总结"><span class="toc-number">1.</span> <span class="toc-text">Mysql优化总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#编写sql的时候可以借鉴一下以下注意点"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">编写sql的时候可以借鉴一下以下注意点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#一、EXPLAIN"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">一、EXPLAIN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、SQL语句中IN包含的值不应过多"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">二、SQL语句中IN包含的值不应过多</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、SELECT语句务必指明字段名称"><span class="toc-number">1.0.0.4.</span> <span class="toc-text">三、SELECT语句务必指明字段名称</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、当只需要一条数据的时候，使用limit-1"><span class="toc-number">1.0.0.5.</span> <span class="toc-text">四、当只需要一条数据的时候，使用limit 1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五、如果排序字段没有用到索引，就尽量少排序"><span class="toc-number">1.0.0.6.</span> <span class="toc-text">五、如果排序字段没有用到索引，就尽量少排序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六、如果限制条件中其他字段没有索引，尽量少用or"><span class="toc-number">1.0.0.7.</span> <span class="toc-text">六、如果限制条件中其他字段没有索引，尽量少用or</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#七、尽量用union-all代替union"><span class="toc-number">1.0.0.8.</span> <span class="toc-text">七、尽量用union all代替union</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#八、不使用ORDER-BY-RAND"><span class="toc-number">1.0.0.9.</span> <span class="toc-text">八、不使用ORDER BY RAND()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#九、区分in和exists，-not-in和not-exists"><span class="toc-number">1.0.0.10.</span> <span class="toc-text">九、区分in和exists， not in和not exists</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十、使用合理的分页方式以提高分页的效率"><span class="toc-number">1.0.0.11.</span> <span class="toc-text">十、使用合理的分页方式以提高分页的效率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十一、分段查询"><span class="toc-number">1.0.0.12.</span> <span class="toc-text">十一、分段查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十二、避免在-where-子句中对字段进行-null-值判断"><span class="toc-number">1.0.0.13.</span> <span class="toc-text">十二、避免在 where 子句中对字段进行 null 值判断</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十三、不建议使用-前缀模糊查询"><span class="toc-number">1.0.0.14.</span> <span class="toc-text">十三、不建议使用%前缀模糊查询</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十四、避免在where子句中对字段进行表达式操作"><span class="toc-number">1.0.0.15.</span> <span class="toc-text">十四、避免在where子句中对字段进行表达式操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十五、避免隐式类型转换"><span class="toc-number">1.0.0.16.</span> <span class="toc-text">十五、避免隐式类型转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十六、对于联合索引来说，要遵守最左前缀法则"><span class="toc-number">1.0.0.17.</span> <span class="toc-text">十六、对于联合索引来说，要遵守最左前缀法则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十七、必要时可以使用force-index来强制查询走某个索引"><span class="toc-number">1.0.0.18.</span> <span class="toc-text">十七、必要时可以使用force index来强制查询走某个索引</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十八、注意范围查询语句"><span class="toc-number">1.0.0.19.</span> <span class="toc-text">十八、注意范围查询语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十九、关于JOIN优化"><span class="toc-number">1.0.0.20.</span> <span class="toc-text">十九、关于JOIN优化</span></a></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/01/02/canal-client%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2020-01-02T12:46:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/01/02/canal-client%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Canal-Client如何工作</a>
-    </h1>
-  
-
-        <div class="article-info info-on-left">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">canal</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据同步</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/canal/" class="article-tag-list-link color1">canal</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
+
+<script>
+  (function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s)
+  })();
+</script>
 
 
           </div>
@@ -367,8 +403,8 @@
 var yiliaConfig = {
     mathjax: true,
     isHome: false,
-    isPost: false,
-    isArchive: true,
+    isPost: true,
+    isArchive: false,
     isTag: false,
     isCategory: false,
     open_in_new: false,
