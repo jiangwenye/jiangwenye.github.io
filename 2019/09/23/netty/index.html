@@ -9,16 +9,16 @@
   <link rel="apple-touch-icon" href="/img/avatar.jpg">
   <title>Netty底层通讯原理（NIO） - CanJ--Grow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Netty底层通讯原理（NIO）Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll–more–&gt;Netty-server端初始化的时候会构造两个线程池(bossEventLoopGroup,workEventLoopGroup)，基于reactor线程池，原理如下：bossEventLoopGroup根据参数指定启用多">
+  <meta name="description" content="Netty底层通讯原理（NIO）Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netty底层通讯原理（NIO）">
 <meta property="og:url" content="http://jiangwenye.github.io/2019/09/23/netty/index.html">
 <meta property="og:site_name" content="CanJ--Grow">
-<meta property="og:description" content="Netty底层通讯原理（NIO）Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll–more–&gt;Netty-server端初始化的时候会构造两个线程池(bossEventLoopGroup,workEventLoopGroup)，基于reactor线程池，原理如下：bossEventLoopGroup根据参数指定启用多">
+<meta property="og:description" content="Netty底层通讯原理（NIO）Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select&#x2F;epoll">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-09-23T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-15T03:12:54.085Z">
+<meta property="article:modified_time" content="2020-05-15T03:59:23.625Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="netty">
 <meta property="article:tag" content="socket">
@@ -221,7 +221,8 @@
       
 
       	
-      		<h1 id="Netty底层通讯原理（NIO）"><a href="#Netty底层通讯原理（NIO）" class="headerlink" title="Netty底层通讯原理（NIO）"></a><strong>Netty底层通讯原理（NIO）</strong></h1><h4 id="Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll"><a href="#Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll" class="headerlink" title="Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select/epoll"></a><em>Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select/epoll</em></h4><p>–more–&gt;<br><strong>Netty-server</strong>端初始化的时候会构造两个线程池(<strong>bossEventLoopGroup,workEventLoopGrou</strong>p)，基于<strong>reactor</strong>线程池，原理如下：<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/1721645c7d21bc8f?w=800&h=150&f=png&s=41525" alt=""><br><strong>bossEventLoopGroup</strong>根据参数指定启用多少个<strong>eventLoop</strong>来接收客户端连接，一个<strong>eventLoop</strong>就是对应一个<strong>线程</strong>。<strong>eventLoop</strong>会启用<strong>selector</strong>选择器，注册端口的<strong>connect</strong>事件，只要工作就是<strong>鉴权</strong>，<strong>三次握手</strong>，然后将<strong>accept()</strong>的<strong>channel</strong>注册到<strong>workEventLoopGroup</strong>中的一个<strong>eventLoop</strong>上，给这个<strong>channel</strong>在该<strong>workEventLoop</strong>的<strong>selector</strong>上注册读写事件。</p>
+      		<h1 id="Netty底层通讯原理（NIO）"><a href="#Netty底层通讯原理（NIO）" class="headerlink" title="Netty底层通讯原理（NIO）"></a><strong>Netty底层通讯原理（NIO）</strong></h1><h4 id="Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll"><a href="#Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select-epoll" class="headerlink" title="Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select/epoll"></a><em>Netty的高性能主要体现在其NIO机制，用户层依赖reactor线程模型实现，底层又依赖于系统层的select/epoll</em></h4><a id="more"></a>
+<p><strong>Netty-server</strong>端初始化的时候会构造两个线程池(<strong>bossEventLoopGroup,workEventLoopGrou</strong>p)，基于<strong>reactor</strong>线程池，原理如下：<br><img src="https://user-gold-cdn.xitu.io/2020/5/15/1721645c7d21bc8f?w=800&h=150&f=png&s=41525" alt=""><br><strong>bossEventLoopGroup</strong>根据参数指定启用多少个<strong>eventLoop</strong>来接收客户端连接，一个<strong>eventLoop</strong>就是对应一个<strong>线程</strong>。<strong>eventLoop</strong>会启用<strong>selector</strong>选择器，注册端口的<strong>connect</strong>事件，只要工作就是<strong>鉴权</strong>，<strong>三次握手</strong>，然后将<strong>accept()</strong>的<strong>channel</strong>注册到<strong>workEventLoopGroup</strong>中的一个<strong>eventLoop</strong>上，给这个<strong>channel</strong>在该<strong>workEventLoop</strong>的<strong>selector</strong>上注册读写事件。</p>
 <p><strong>workEventLoopGroup</strong>机制和boss差不多，也是根据初始化参数构造指定<strong>eventLoop</strong>，但是主要的<strong>业务处理</strong>是这个工作线程来处理的。</p>
 <p>Netty的通讯方式是基于NIO实现，根据<strong>selector.select()</strong>方法获取注册的感兴趣的fd就绪事件，<br><strong>selecor.select()</strong>方法默认是<strong>阻塞</strong>的(<strong>内核阻塞</strong>，如果有fd事件就绪会唤醒读取返回)，如果select方法传了时间参数，则会在指定时间后返回。</p>
 <p>Netty的底层通讯，获取就绪fd事件，也有多种实现机制，比如select/poll/epoll</p>
