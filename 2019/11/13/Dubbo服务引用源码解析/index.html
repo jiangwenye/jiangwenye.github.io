@@ -18,7 +18,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T10:10:25.765Z">
+<meta property="article:modified_time" content="2020-05-26T02:48:11.170Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="dubbo">
 <meta property="article:tag" content="spring">
@@ -239,6 +239,9 @@
 <p><em>一个注册中心可能有多个服务提供者，因此这里需要将多个服务提供者合并为一个<font color=blue>MockClusterWrapper（FailoverCluster）</font>（详情见另一篇）</em></p>
 <p><em>将该注册中心中的所有服务提供者invoker合并为一个（directory包含一个<font color=blue>Map&lt;String,List&lt;Invoker<T>&gt;&gt;</font>属性对应方法名下的invoker列表）,<font color=red>cluster.join</font>返回的Invoker是对调用具体invoker的封装（负载均衡，同步或者异步，还有降级等处理）</em></p>
 <p><em>最后会调用这个方法</em><br><a href="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105834136033041000800410.png" target="_blank" rel="noopener"><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200512105834136033041000800410.png" alt=""></a><br><em>这里面就有相关的降级，重试和负载均衡机制！</em></p>
+<p>实际请求调用的时候是调用的failoverCluster(重试和负载均衡的逻辑)，在这之前会调用mockClusterInvoker（dubbo的mock机制，是否降级机制），其是现在mockClusterWrapper类中，也是根据wrapper的代理实现的。(dubbo的spi机制，getExtension()方法中实现的，感兴趣的百度把。)</p>
+<p>这里面就有相关的降级，重试和负载均衡机制！<br>dubbo自身是支持mock服务的，在reference标签里，有一个参数mock，该参数有四个值，false,default,true,或者Mock类的类名。分别代表如下含义:<br>false，不调用mock服务。<br>true，当服务调用失败时，使用mock服务。<br>default，当服务调用失败时，使用mock服务。<br>force，强制使用Mock服务(不管服务能否调用成功)。(使用xml配置不生效,使用ReferenceConfigAPI可以生效)<br>使用方法:<br>将mock参数启用，在<a href="dubbo:reference">dubbo:reference</a>中添加参数项mock=true。</p>
+<p>最后会使用jdk动态代理生成一个动态代理类来调用Invoker.invoke()</p>
 <p><em>最后会使用jdk动态代理生成一个动态代理类来调用<font color=red>invoker.invoke()</font></em></p>
 <h6 id="如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-Dubbo服务引用源码解析-3q"><a href="#如需转载，请注明出处：https-jiangwenye-github-io-2019-11-13-Dubbo服务引用源码解析-3q" class="headerlink" title="如需转载，请注明出处：https://jiangwenye.github.io/2019/11/13/Dubbo服务引用源码解析/  3q!"></a><em>如需转载，请注明出处：<a href="https://jiangwenye.github.io/2019/11/13/Dubbo服务引用源码解析/">https://jiangwenye.github.io/2019/11/13/Dubbo服务引用源码解析/</a>  3q!</em></h6>
       	

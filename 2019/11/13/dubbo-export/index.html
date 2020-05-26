@@ -18,7 +18,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://jiangwenye.github.io/img/avatar.jpg">
 <meta property="article:published_time" content="2019-11-13T12:46:25.000Z">
-<meta property="article:modified_time" content="2020-05-13T10:05:57.827Z">
+<meta property="article:modified_time" content="2020-05-15T07:17:51.510Z">
 <meta property="article:author" content="CanJ">
 <meta property="article:tag" content="dubbo">
 <meta property="article:tag" content="spring">
@@ -242,7 +242,7 @@
 <p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124211085033041002400385.png" alt=""><br><em>最终会调用</em></p>
 <p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124239194033041002501097.png" alt=""></p>
 <p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124300575033041002501468.png" alt=""></p>
-<p><strong>*DubboProtocol</strong>的<font color='red'>openServer</font>就是创建该服务提供者的对应端口的<strong>netty serverSocket.*</strong></p>
+<p><strong>DubboProtocol</strong>的<font color='red'>openServer</font>就是创建该服务提供者的对应端口的<strong>netty serverSocket.</strong></p>
 <p><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513124440321033041002600339.png" alt=""></p>
 <p><em>第一个方法是根据请求信息获取对应的<strong>invoker</strong>对象（这个类就是处理请求的handler）</em></p>
 <p><em>这里可以看到第二个方法就是判断能否在<strong>invoker</strong>里找到请求的方法，有的话就执行。</em><br><img src="http://test-metro-admin.oss-cn-shanghai.aliyuncs.com/billFile/20200513125401565033041002901759.png" alt=""><br><em>这个方法就是根据请求的版本组名端口等信息来获取对应的*</em>invoker*<em>来执行具体的方法</em>。</p>
